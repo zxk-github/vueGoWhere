@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="jquery.js"></script>
+</head>
+<body>
+<div id="app">
+  <input type="text" id="input"/>
+  <button id="btn">click</button>
+  <ul id="list">
+  </ul>
+
+  <script>
+      function Page(){
+
+      }
+
+      $.extend(Page.prototype, {
+        init(){
+          this.bindEvent();
+        },
+        bindEvent(){
+          const btn = $('#btn');
+          btn.on('click', $.proxy(this.handleBtnClick, this));
+        },
+        handleBtnClick(){
+          console.log(this);
+          let inputValue= $('#input').val();
+          $('#list').append(`<li>${inputValue}</li>`);
+          $("#input").val('')
+        }
+      })
+      var page = new Page();
+      page.init()
+  </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <input type="text" v-model="toDoValue"/>
+    <button v-on:click="btn()">click</button>
+    <ul>
+      <todo-item v-bind:content="item" v-for="item in list">{{item}}</todo-item>
+    </ul>
+  </div>
+
+  <script>
+    let TodoItem = {
+      props: ['content'],
+      template: "<li>{{content}}</li>"
+    }
+    var app = new Vue({
+      el: '#app',
+      components: {
+        TodoItem
+      },
+      data: {
+        toDoValue: '',
+        list: []
+      },
+      methods: {
+        btn(){
+          this.list.push(this.toDoValue);
+          this.toDoValue = '';
+        }
+      }
+    })
+
+  </script>
+</body>
+</html>

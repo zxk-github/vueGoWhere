@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <input type="text"  name="text" v-model="inputValue"/>
+    <button v-on:click="btnAdd()">提交</button>
+    <ul>
+      <li v-for="item in list">{{item}}</li>
+    </ul>
+  </div>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        list: [],
+        inputValue: ''
+      },
+      methods: {
+        btnAdd: function(){
+          // alert(this.inputValue)
+          this.list.push(this.inputValue)
+          this.inputValue = '';
+        }
+      }
+
+    })
+  </script>
+</body>
+</html>

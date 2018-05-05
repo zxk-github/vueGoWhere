@@ -1,0 +1,61 @@
+v-for 模板指令, 循环数据
+v-on 模板指令，绑定事件 v-on:click 绑定一个click事件
+v-model 数据的双向绑定，当input中的数据发生变化的时候，Vue实例里面的data里面的inputValue就会发生变化, 反之一样，当inputValue发生变化的时候，input的value也会发生变化
+
+this.inputValue 当写this.inputValue的时候，vue实例会自动的去data里面找inputValue，所以this.inputValue就是data里面的inputValue
+
+MVVM设计模式
+
+MVP设计模式
+Model层  数据层/模型层
+presenter层 呈现层/业务逻辑相关的控制层
+view 视图层 页面上的一些DOM相关的展示
+
+视图层发出一个事件交给控制器，控制器要么调用ajax获取数据(model)，要么就直接操作dom(view)，根据view层发出的事件，控制器层决定下一步做什么，通过这个可以看出presenter层是MVP设计模式中的最重要一层，他是一个view和model之间的一个中转站，使用MVP设计模式，大量代码会写到presenter层，并且大量代码都是在进行dom操作， 面向dom开发
+
+MVVM设计模式
+model 负责存储数据
+view 负责显示数据
+不存在presenter层
+使用mvvm编写代码，不需要考虑viewModel， 这一层是vue已经实现的，只需要关注视图层和数据层
+
+vue实现的是vm层，即数据变化了，通知view页面的变化，这样只需要关注M层， 当数据发生变化时候，vue会检测到变化，V层发生变化，当V层输入变化的时候，M层也会自动改变，面向数据开发
+
+2-5
+前端组件化
+  把一个页面切成很多部分，每个部分做成一个组件，然后拼接起来
+
+2-6
+组建化修改toDoList
+
+全局组件
+v-bind:content="item" 向子组传递一个绑定值
+
+view中
+  <name v-bind:content="item" v-for="item in list"></name>
+将list数组中的每一项通过循环赋值给item, 然后将item通过v-bind语法绑定content变量传给子组件name
+
+Vue.component("Name",{
+  props: ['content'], //接受content变量
+  template: '<li>{{content}}</li>',
+}) //vue.component()提供出来创建一个全局组件的方法
+
+局部组建
+let Name = {
+  props: ['content'],
+  template: "<li>{{content}}</li>"
+}
+
+app.components: {
+  Name: Name
+}
+
+2-7 子组件向父组件发送数据
+v-on:click 简写 @click
+v-bind:content 简写 :bind
+
+子组件向父组件通过this.$emit('delete', index) 发射事件，并且携带子组件的数据，父组件通过@delete监听事件，一旦事件触发，就会执行事件对应的函数
+
+
+
+

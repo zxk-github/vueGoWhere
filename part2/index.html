@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="app">{{ content }}</div>
+  <!--<script>-->
+    <!--var dom = document.getElementById('app');-->
+    <!--dom.innerHTML = 'hello word';-->
+  <!--</script>-->
+  <script>
+    var app = new Vue({  //创建一个VUE实例
+      el: '#app',  //当前vue实例接管的id=app这个标签里的区域，当前vue实例处理的范围
+      data: {   // 定数据
+        content: 'hello word 1'
+      }
+    })
+
+    setTimeout(function(){
+      app.$data.content = 'bye word' ;
+      //$data可以理解位data的别名
+    }, 2000)
+
+  </script>
+</body>
+</html>
