@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .activated{
+      color: red;
+    }
+    .activatedOne{
+      background: red;
+    }
+  </style>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    <div :class="{activated: isActivated, activatedOne: isActivatedOne}" @click="handleClick">hello world</div>
+  </div>
+
+
+  <script>
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        isActivated: false,
+        isActivatedOne: true
+      },
+      methods: {
+        handleClick(){
+          this.isActivated = !this.isActivated;
+          this.isActivatedOne = !this.isActivatedOne;
+        }
+      }
+    })
+  </script>
+</body>
+</html>

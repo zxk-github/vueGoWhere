@@ -1,0 +1,319 @@
+3-1 vue 实例
+
+<div id="root">
+  <button v-on:click="handleClick">click</button>
+  {{msg}}
+  <item></item>
+</div>
+
+
+Vue.component('item', {
+  template:'<div>hello item</div>'
+})
+
+var vm = new Vue({
+  el: '#root',
+  data: {
+  },
+  methods: {
+    handleClick(){
+
+    }
+  }
+})
+通过new创建一个Vue实例，保存在变量vm中，通过el设置Vue实例接管的id="root"区域的DOM渲染，data字段存放的都是一些数据，vue实例接管这一DOM区域之后，会对DOM内容进行分析，使用到了插值表达式语法，就会到data里面寻找msg对应的数据，使用msg数据替换掉模板中的插值表达式,Vue实例可以分析到button绑定了一个click事件，btn点击之后，就会执行vue实例下的methods里面的handleClick方法
+
+每一个程序都有一个入口点, vue的入口点就是Vue实例，这个实例叫做根实例，除了根实例是一个Vue实例外，Vue中的每一个组件也是一个Vue实例，当我们创建一个组件的时候，Vue的底层也会把它编译成一个Vue实例，一个Vue的项目是由很多Vue实例拼装组成的(很多Vue组建)
+
+vm.$el 会得到接管的区域，凡是以vm.$... $...都是Vue实例的属性或者方法
+
+3-2 vue 实例的生命周期钩子
+vue实例--> 生命周期图示
+声明周期函数就是Vue实例在某一个时间点会自动执行的函数
+new Vue()
+init Events & Lifecycle //初始化事件和生命周期相关基础内容，之后会执行beforeCreate
+
+init injections & reactivity //初始化注入和双向数据绑定相关的内容, 之后会执行created  这个时候数据的变化依然回生效
+
+询问是否有el选项
+是
+询问是否有template选项
+是: 渲染模板
+否: 把el元素对应的html当作模板(如果没有template,会把id="root"的div,整体当作一个模板，进行渲染)
+
+beforeMount 模板和数据结合，即将挂载到页面的一瞬间之前的时间点上执行,这个时候数据并没有被渲染到页面上，this.$el还没有数据的存在，但是已经不可以进行数据的改变了
+
+mounted 模板和实例结合生成的Vue实例里面的DOM元素，会被挂载到页面上这时候执行mounted，这时候数据已经被渲染在页面上了,this.$el已经有数据的存在了
+
+数据发生变化的时候，beforeUpdate 和 updated会被执行
+beforeUpdate 数据发生变化，还没有重新渲染之前，执行
+
+updated 重新渲染之后执行
+
+
+当vm.$destroy()这个方法被调用的时候，会触发beforeDestroy 和 destroyed
+
+beforeDestroy 组件即将被销毁的时候，会执行
+destroyed 完全销毁之后被执行
+
+3-3 vue的模板语法
+
+插值表达式{{msg}}
+
+v-text="msg"Vue指令后面根的不是字符串，而是一个js表达式
+<div v-text="msg"></div>
+v-text作用是让div的innerHTML值，变成data里面的一个数据, v-text和插值表达式功能一样
+
+<div v-html="msg></div>
+让div里面的html的内容和msg这个数据变量进行一个绑定
+
+{{}} 和 v-text 会原封不动的输出字符串
+v-html 会把数据中html标签进行解析
+
+3-4 计算属性，方法和侦听器
+data: {
+  firstName: 'zhang',
+  lastName: 'xk',
+  age: 23
+}
+
+<div>{{firstName + lastName}}</div>
+模板仅仅用来起到显示功能的，尽量不要在模板中存在逻辑部分，所以可是使用计算属性
+
+1. 计算属性
+computed: { //fullName属性是通过计算得来的
+  fullName: function(){
+    console.log("计算了一次")
+    return this.firstName+this.lastName
+  }
+}
+
+<div>{{fullName}}</div>
+初始化执行一次
+计算属性内置缓存, 计算属性当依赖的变量没有变化的时候，计算属性就不会重新计算了，会一直使用上一次加算之后的结果，如果发生了变化，计算属性会重新计算一次
+
+2. 方法方式实现同样效果
+{{fullName()}}
+
+methods: {
+  fullName(){
+    console.log('执行了一次')
+    return this.firstName + this.lastName;
+  }
+}
+初始化时候会执行一次，但是，在改age的时候，只要页面进行重新渲染，fullName()都会执行一次，内部没有缓存机制
+
+3. watch 侦听器实现
+
+watch: {
+  firstName(){  //监听fistName
+    console.log("计算了一次")
+    this.fullName = this.firstName + this.lastName;
+  },
+  lastName(){  //监听lastName
+    console.log("计算了一次")
+    this.fullName = this.firstName + this.lastName;
+  }
+}
+
+初始化时候，watch函数不会执行
+当和firstName,lastName变化不相关的时候，函数不会执行，因为watch也会有缓存的存在，所以在改变age的时候，函数不会执行
+
+watch和computed都有缓存机制，但是watch要比computed复杂，所以都可以实现的时候，优先使用computed
+
+3-5 计算属性的setter 和 getter
+
+{{fullName}}
+这样的一个插值表达式，Vue会现在data里面找，找不到会到computed里面找，找到显示出来，如果data里面个computed里面都包含者同样的变量，这时候Vue会抛出警告， The computed property "fullName" is already defined in data.并且会显示data里面的数据，如果都找不到，会抛出错误
+
+computed: {
+  fullName(){
+    return this.firstName + this.lastName;
+  }
+}
+和下面的写法等价
+computed: {
+  fullName: {
+    get: function(){ //取fullName值的时候，会执行
+      return this.firstName+ this.lastName
+    },
+    set: function(value){ //设置fullName时候，会执行
+      var arr = value.split(" ");
+      this.firstName = arr[0];
+      this.lastName = arr[1];
+    }
+  }
+}
+
+computed特性：当依赖的值发生变化的时候，就会重新计算
+在页面进行初始化的时候，会执行一次get方法，获取fullName的值
+执行vm.fullName = 'song qf';
+因为是给fullName进行赋值操作，所以会执行set操作，set函数的value值设置的值，在执行set函数的时候，computed依赖的firstName和lastName都发生了变化，但是只会执行一次，所以会重新执行computed，这时候get也会执行，fullName发生了变化，页面是双向数据绑定的，所以页面发生变化
+
+3-6 Vue中的样式绑定
+
+class 的对象绑定
+<div :class="{activated: isActivated}"></div>
+div上是否加上activated class类，是由isActivated决定的
+
+class 的数组绑定
+<div :class="[activated]"></div>
+activated变量 有哪些值，class类就包含哪些class名称
+
+style 的对象绑定
+<div :style="styleObj"></div>
+data: {
+  styleObj: {
+    color: 'red',
+    fontSize: '20px'
+  }
+}
+
+style 的数组绑定
+<div :style="[styleObj, styleOneObj]"></div>
+data: {
+  styleObj: {
+    color: 'red',
+    fontSize: '20px'
+  },
+  styleTWoObj: {
+    background: 'blue'
+  }
+}
+
+
+3-7
+Vue的条件渲染 v-if
+
+<div v-if="show">hello world</div>
+<div v-show="show"></div>
+data: {
+  show: true
+}
+v-if 决定一个元素是否在页面上存在DOM上
+v-show 页面已经渲染，但是处于display:none的状态
+不断触发是否显示隐藏，使用v-show性能更高，因为不会频繁的把一个DOM从页面上删除添加
+
+<div v-if="show">hello world</div>
+<div v-else>Bye Bye</div>
+必须贴紧，中间不能加别的标签，show:true时候显示hello world，false显示Bye Bye
+
+<div v-if="show === 'a'">aaa</div>
+<div v-else-if="show === 'b'">bbb</div>
+<div v-else>others</div>
+
+<div v-if="show">
+  用户名：<input />
+</div>
+<div v-else>
+  邮箱：<input />
+</div>
+
+因为Vue会尽可能复用页面上已经存在的DOM，所以在由true变为false之后，页面的input不会有变化，这时候可以采用key值的方式解决问题
+<div v-if="show">
+  用户名：<input key="username"/>
+</div>
+<div v-else>
+  邮箱：<input key="email"/>
+</div>
+因为在Vue中，加了key值的元素，Vue会认为是唯一的元素，如果key值不一样，那么Vue就会认为是不一样的元素，就不会渲染以前的元素，就会重新渲染
+
+3-8 列表渲染
+v-for="(item,index) of list" **
+v-for="(item,index) in list"
+
+为了提升循环显示的性能，一般给循环的每一项上加一个唯一的key值，key值要唯一，同时不要使用index作为key值
+<div v-for="(item, index) of list" :key="item._id">{{item}}</div>
+
+:key值如果使用index在频繁操作数据的时候，依然是很耗费性能的
+
+当我们修改循环使用的数组list的时候，不能简单使用下标来修改数组，通过下标数改数组，数组发生变化，页面是不会发生变化的，只能通过Vue提供的几个数组变异方法，来操作数组，才能实现数据发生变化，页面也同时响应变化
+pop
+push
+shift
+unshift
+splice
+sort
+reverse
+
+vm.list[3] = {_id:'aaa', text:'111'}
+vm.list[1] = {_id:'aaa', text:'111'}
+上面这种通过数组下标的方式操作数组，页面是不会发生变化的
+
+vm.list.splice(1,1,{_id:"asdfas", text: 'sadfsdfs'})
+通过Vue提供的变异方法操作数组，数组发生变化，页面也会响应变化
+
+改变应用，数组发生变化，页面也会及时响应
+vm.list = [
+  {
+    _id: 'asdf',
+    text: 'aaa'
+  },
+  {
+    _id: 'wqerweqrw',
+    text: 'bbb1111'
+  },
+  {
+    _id: 'wqerwerwqe',
+    text: 'ccc'
+  },
+
+]
+
+模板站位符，可以帮助我们包裹一些元素，但是在循环过程中，template不会被渲染在页面上
+<template v-for="(item, index) of list">
+  <div>{{item.text}}</div>
+  <span> {{item.text}</span>
+</template>
+
+对象的循环
+data: {
+  userInfo: {
+    'name': 'zhang',
+    age: '12',
+    gender: 'male'
+  }
+}
+<div v-for="(item, key, index) of userInfo">
+  {{item}} {{key}}  {{index}}
+</div>
+
+改变数据，页面有响应
+vm.userInfo.name = 'dell lee' //可以变化
+
+直接向对象添加值页面不会响应
+egg: vm.userInfo.addr = 'aaaaaa'  //页面无响应
+
+通过改变数据的引用来改变对象的值，页面就会发生变化
+vm.userInfo = {
+  'name': 'zhang',
+  age: '12',
+  gender: 'male',
+  addr: 'aaaaa'
+}
+
+3-9 Vue中的set方法
+用法1
+通过set方法，改变对象的值，数据发生变化时，页面也会跟着变化，可以用来优化改变对象引用，页面才会发生变化的方法
+Vue.set(vm.userInfo, "addr", 'aaaa')
+
+用法2
+set方法，不仅是Vue的一个全局方法，也是Vue的一个实例方法
+vm.$set(vm.userInfo, 'addr', "aaaa")
+
+set方法改变数组
+Vue.set(vm.userInfo, 1, 5)
+
+vm.$set(vm.unserInfo, 2, 3)
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    {{firstName + lastName}}
+    <!--{{fullName}}-->
+    {{age}}
+    {{fullName()}}
+  </div>
+
+
+  <script>
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        firstName: 'zhang',
+        lastName: 'xk',
+        age: 23
+      },
+      //计算属性
+      // computed:{
+      //   fullName(){
+      //     console.log("计算了一次")
+      //     return this.firstName + this.lastName;
+      //   }
+      // }
+      methods: {
+        fullName: function(){
+          console.log("方法执行一次")
+          return this.firstName + this.lastName;
+        }
+      }
+    })
+  </script>
+</body>
+</html>

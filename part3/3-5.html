@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    {{fullName}}
+  </div>
+
+
+  <script>
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        firstName: 'zhang',
+        lastName: 'xk',
+        age: 23
+      },
+      computed: { //当依赖的值发生变化的时候就会重新计算
+        // fullName(){
+        //   return this.firstName + this.lastName;
+        // }
+        fullName: {
+          get: function(){ //取fullName值的时候，会执行
+            console.log(111);
+            return this.firstName+ this.lastName
+          },
+          set: function(value){ //设置fullName时候，会执行
+            var arr = value.split(" ");
+            this.firstName = arr[0];
+            this.lastName = arr[1];
+          }
+        }
+      }
+    })
+  </script>
+</body>
+</html>

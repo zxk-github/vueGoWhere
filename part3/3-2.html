@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+  </div>
+
+
+  <script>
+    var vm = new Vue({
+      el: '#root',
+      data:{
+        msg: 'hello world'
+      },
+      template: "<div>{{msg}}</div>",
+      beforeCreate: function(){
+        console.log('beforeCreate')
+      },
+      created: function(){
+        // this.$data.msg = "aaa" 这个时候可以改变数据
+        console.log('created')
+      },
+      beforeMount: function() {
+        // this.$data.msg = "bbb" 这个时候可以改变数据已经不能起作用了
+        console.log(this.$el);  //<div id="root"></div> 这时候没有数据
+        console.log('beforeMount')
+      },
+      mounted(){
+        console.log(this.$el) //<div>hello world</div> 已经存在数据
+        console.log('mounted')
+      },
+      beforeDestroy: function(){
+        console.log('beforeDestroy')
+      },
+      destroyed(){
+        console.log('destroyed')
+      },
+      beforeUpdate: function(){
+        // this.msg = 'bbb'  //这时候改变数据会再次触发
+        console.log('beforeUpdate')
+      },
+      updated(){
+        // this.msg = 'ccc'
+        console.log('updated')
+      }
+    })
+  </script>
+</body>
+</html>

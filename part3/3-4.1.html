@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    {{firstName + lastName}}
+    {{fullName}}
+    {{age}}
+  </div>
+
+
+  <script>
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        firstName: 'zhang',
+        lastName: 'xk',
+        fullName: 'zhangxk',
+        age: 23
+      },
+      watch: {
+        firstName(){  //监听fistName
+          console.log("firstName计算了一次")
+          this.fullName = this.firstName + this.lastName;
+        },
+        lastName(){  //监听lastName
+          console.log("lastName计算了一次")
+          this.fullName = this.firstName + this.lastName;
+        }
+      }
+
+    })
+  </script>
+</body>
+</html>

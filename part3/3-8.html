@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+  </style>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    <ul>
+      <li v-for="(item, index) of list" :key="item._id">{{item.text}}</li>
+    </ul>
+  </div>
+
+
+  <script>
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        list: [
+          {
+            _id: 'asdf',
+            text: 'aaa'
+          },
+          {
+            _id: 'wqerweqrw',
+            text: 'bbb'
+          },
+          {
+            _id: 'wqerwerwqe',
+            text: 'ccc'
+          },
+
+        ]
+      },
+      methods: {
+        handleClick(){
+
+        }
+      }
+    })
+  </script>
+</body>
+</html>
