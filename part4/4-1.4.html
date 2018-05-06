@@ -7,29 +7,18 @@
 </head>
 <body>
   <div id="root">
-    <table>
-      <tbody>
-        <tr is="row"></tr>
-        <tr is="row"></tr>
-        <tr is="row"></tr>
-      </tbody>
-    </table>
+    <div ref="hello" @click="handleClick">hello word</div>
   </div>
 
   <script>
-    Vue.component("row", {
-      data: function(){
-        return {
-          content: 'this is a row'
-        }
-      },
-      template: '<tr><td>{{content}}</td></tr>'
-    });
-
     var vm = new Vue({
       el: '#root',
-      data: {
-
+      methods: {
+        handleClick() {
+          let dom = this.$refs.hello;
+          console.log(this.$refs)
+          console.log(dom)
+        }
       }
     })
 

@@ -18,7 +18,12 @@
 
   <script>
     Vue.component("row", {
-      template: '<tr><td>this is a row</td></tr>'
+      data: function(){
+        return {
+          content: 'this is a row'
+        }
+      },
+      template: '<tr><td>{{content}}</td></tr>'
     });
 
     var vm = new Vue({

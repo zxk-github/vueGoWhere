@@ -7,24 +7,19 @@
 </head>
 <body>
   <div id="root">
-    <table>
-      <tbody>
-        <row></row>
-        <row></row>
-        <row></row>
-      </tbody>
-    </table>
+    <counter count="1"></counter>
+    <counter :count="2"></counter>
   </div>
 
   <script>
-    Vue.component("row", {
-      template: '<tr><td>this is a row</td></tr>'
-    });
-
+    var counter = {
+      props: ['count'],
+      template: "<div>{{count}}</div>"
+    };
     var vm = new Vue({
       el: '#root',
-      data: {
-
+      components: {
+        counter
       }
     })
 

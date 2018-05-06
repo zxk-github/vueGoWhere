@@ -7,20 +7,14 @@
 </head>
 <body>
   <div id="root">
-    <counter count="1"></counter>
-    <counter :count="2"></counter>
+
   </div>
 
   <script>
-    var counter = {
-      props: ['count'],
-      template: "<div>{{count}}</div>"
-    };
+
     var vm = new Vue({
-      el: '#root',
-      components: {
-        counter
-      }
+      el: '#root'
+
     })
 
   </script>

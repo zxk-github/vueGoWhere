@@ -1,0 +1,216 @@
+4-1 组件使用的细节点
+使用is属性解决模板标签页面渲染中的小bug
+
+通过Vue.component() 定义一个全局组组件
+Vue.component("row", {
+  template: '<tr><td>this is a row</td></tr>'
+});
+
+<table>
+  <tbody>
+    <row></row>
+    <row></row>
+    <row></row>
+  </tbody>
+</table>
+
+通过上面的使用，在页面渲染之后，会出现tbody中中没有内容，tr会和table平级的现象，这种情况的出现是因为，在html5中，tbody下面只能显示tr，不能显示其他标签，row是不tr标签，所以会出现展现问题，解决这种问题需要使用is属性
+
+<table>
+  <tbody>
+    <tr is="row"></tr>
+    <tr is="row"></tr>
+    <tr is="row"></tr>
+  </tbody>
+</table>
+tbody中需要使用一个组件，但是由于h5标准，不能直接使用这个组件，根据标准，写了一个tr, 使用is属性之后，尽管tbody下面放置的是tr，但是实际上是row组件，这样写既能保证tr位置上显示的是我们的组件，又能保证符合h5的编码规范，这样就解决了bug
+
+通过is属性的设置，现在页面的显示就已经正常了，
+
+ul>li
+ol>li
+table>tbody>tr>td/th
+select>option
+这种h5规范组合标签需要注意
+
+
+在子组件中定义data的时候，data必须是一个函数，不能是一个对象，子组件中的数据，通过return一个对象返回出来
+
+Vue.component("row", {
+  data: function(){
+    return {
+      content: 'this is a row'
+    }
+  },
+  template: '<tr><td>{{content}}</td></tr>'
+});
+
+Vue之所以这样设置，是因为子组件不会像根组件一样，只会被调用一次，每一次子组件的调用不希望和其他调用产生冲突，每一个子组件都应该有自己的数据集合，通过函数返回一个对象的方式定义数据的目的，就是希望每一个子组件都有一个独立的数据存储，这样不会出现多个子组件之间数据错乱的现象
+
+
+ref 引用
+
+html标签的引用，获取的是一个DOM元素
+<div ref="hello" @click="handleClick">hello word</div>
+
+methods: {
+  handleClick() {
+   let dom = this.$refs.hello;  //获取的是一个DOM元素
+   console.log(this.$refs)
+   console.log(dom)
+  }
+}
+this.$refs 指的是Vue实例里面所有的引用
+
+组件的引用
+<div id="root">
+  <counter ref="one" @change="add"></counter>
+  <counter ref="two" @change="add"></counter>
+  {{total}}
+</div>
+
+Vue.component("counter", {
+  template: '<div @click="countAdd">hello world{{number}}</div>',
+  data(){
+    return {
+      number: 0
+    }
+  },
+  methods: {
+    countAdd(){
+      this.number++;
+      this.$emit('change')
+    }
+  }
+});
+methods: {
+  add() {
+    this.total = this.$refs.one.number + this.$refs.two.number;
+  }
+}
+
+4-2 父子组件数据传递
+
+父组件向子组件通过属性的形式传递数据
+
+<counter count="0"></counter>
+这种方式，子组件中接收到的是一个字符串
+
+<counter :count="0"></counter>
+这种方式，子组件接受到的是一个数字，因为加了:， 双引号里面的内容实际上就是一个Js表达式了
+
+var counter = {
+  props: ['count'],
+  template: "<div>{{count}}</div>"
+};
+var vm = new Vue({
+  el: '#root',
+  components: {
+    counter
+  }
+})
+
+子组件不能修改父组件传递过来的数据
+
+Vue有一个单向数据流的概念，父组件向子组件通过属性的形式传递参数，传递过来的这个参数，父组件可以随意的修改，但是子组件不能修改父组件传递过来的参数，只能对父组件传递过来参数使用，因为如果子组件接受到的参数是引用类型数据，那么子组件修改之后，不仅会改变自身，还会改变其他对这个参数引用的子组件
+
+如果传进来的count是一个对象，那么是对父组件对象的引用，这时候在子组件中声明一个变量保存传进来对象的值，然后操作这个对象不同情况如下
+<div id="root">
+  {{obj.a}}
+  <button @click="change">click</button>
+  <counter :count="obj"></counter>
+  <counter :count="obj"></counter>
+</div>
+
+<script>
+  var counter = {
+    props: ['count'],
+    data(){
+      return {
+        childObj: this.count
+      }
+    },
+    template: "<div @click='childChange'>hello world{{childObj.a}}</div>",
+    methods: {
+      childChange(){
+        // this.childObj = {a: 4};  //这个时候只会改变当前这个子组件中的数据
+        // this.childObj.a = 4; //因为是引用，所以另一个子组件也会变化, 父组件也会变化
+        // this.count = {a:4} 这种因为修改的父组件传递进来的数据，回报错
+        console.log(this.count);
+      }
+    }
+
+  };
+  var vm = new Vue({
+    el: '#root',
+    components: {
+      counter
+    },
+    data: {
+      obj: {
+        a: 1
+      }
+    },
+    methods: {
+      change(){
+        this.obj.a = 2;  //点击按钮之后，父组件数据发生变化，子组件自动变化
+      }
+    }
+  })
+</script>
+
+
+4-3 组件参数校验与非props特性
+
+组件参数校验
+父组件向子组件传递一些内容，子组件有权力对这些内容进行校验
+
+这时候props是一个对象
+props:{
+  content: String //这时候表示，子组件接收到content必须是一个字符串类型的值，如果不是String，这时候Vue会报错
+}
+
+props: {
+  content: [Number, String] //传进来要么是数字，要么是字符串
+}
+
+props: {
+  content: {
+    type: String,
+    required: true //这个属性必传，false不是必传
+    default: 'default value' //不传content给的默认值
+  }
+}
+
+props: {
+  type: String,
+  validator: function(value){ //随传入的值通过校验器进行校验
+    return value.length > 5   //返回true通过， false不通过
+  }
+}
+
+非props特性
+
+props特性
+当父组件使用子组件，通过属性向子组件传值的时候， 恰好子组件又声明了对父组件传进来数据的接收，两者之间有一个对应关系，这中形式的属性就叫props特性
+具有props特性的子组件，不会把传值的属性在页面DOM标签中显示出来，并且在子组件中可以直接使用插值表达式，或者this.content拿到传进来的值
+
+非props特性
+父组件向子组件通过属性传递了数据，但是子组件内部并没有声明props属性，也就是说，子组件并没有接受父组件传进来的内容，这就叫非props特性
+这时候在子组件模板中不能使用属性，并且属性会在子组件最外层DOM标签中显示出来
+
+
+4-4 给组件绑定原生事件
+<counter @click.native="clickFn "></counter>
+如果不加.native, 这时候点击子组件不会触发，加了之后就会触发点击事件
+
+4-5 非父子组件间的传值
+
+
+
+
+
+
+
+
+

@@ -14,7 +14,17 @@
   <script>
     var counter = {
       props: ['count'],
-      template: "<div>{{count}}</div>"
+      data(){
+        return {
+          number: this.count
+        }
+      },
+      template: "<div @click='addCount'>hello world{{number}}</div>",
+      methods: {
+        addCount(){
+          this.number++
+        }
+      }
     };
     var vm = new Vue({
       el: '#root',

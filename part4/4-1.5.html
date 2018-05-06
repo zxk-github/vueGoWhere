@@ -7,17 +7,35 @@
 </head>
 <body>
   <div id="root">
-    <div ref="hello" @click="handleClick">hello word</div>
+    <counter ref="one" @change="add"></counter>
+    <counter ref="two" @change="add"></counter>
+    {{total}}
   </div>
 
   <script>
+    Vue.component("counter", {
+      template: '<div @click="countAdd">hello world{{number}}</div>',
+      data(){
+        return {
+          number: 0
+        }
+      },
+      methods: {
+        countAdd(){
+          this.number++;
+          this.$emit('change')
+        }
+      }
+    });
+
     var vm = new Vue({
       el: '#root',
+      data: {
+        total: 0
+      },
       methods: {
-        handleClick() {
-          let dom = this.$refs.hello;
-          console.log(this.$refs)
-          console.log(dom)
+        add() {
+          this.total = this.$refs.one.number + this.$refs.two.number;
         }
       }
     })

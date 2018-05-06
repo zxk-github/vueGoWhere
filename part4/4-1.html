@@ -2,9 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Title</title>
+  <script src="vue.js"></script>
 </head>
 <body>
-$END$
+  <div id="root">
+    <table>
+      <tbody>
+        <row></row>
+        <row></row>
+        <row></row>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    Vue.component("row", {
+      template: '<tr><td>this is a row</td></tr>'
+    });
+
+    var vm = new Vue({
+      el: '#root',
+      data: {
+
+      }
+    })
+
+  </script>
+
 </body>
 </html>
