@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    <div ref="hello" @click="handleClick">hello word</div>
+  </div>
+
+  <script>
+    var vm = new Vue({
+      el: '#root',
+      methods: {
+        handleClick() {
+          let dom = this.$refs.hello;
+          console.log(this.$refs)
+          console.log(dom)
+        }
+      }
+    })
+
+  </script>
+
+</body>
+</html>

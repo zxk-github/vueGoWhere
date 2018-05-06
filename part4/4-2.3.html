@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    {{obj.a}}
+    <button @click="change">click</button>
+    <counter :count="obj"></counter>
+    <counter :count="obj"></counter>
+  </div>
+
+  <script>
+    var counter = {
+      props: ['count'],
+      data(){
+        return {
+          childObj: this.count
+        }
+      },
+      template: "<div @click='childChange'>hello world{{childObj.a}}</div>",
+      methods: {
+        childChange(){
+          // this.childObj = {a: 4};  //这个时候只会改变当前这个子组件中的数据
+          // this.childObj.a = 4; //因为是引用，所以另一个子组件也会变化, 父组件也会变化
+          // this.count = {a:4} 这种因为修改的父组件传递进来的数据，回报错
+          console.log(this.count);
+        }
+      }
+
+    };
+    var vm = new Vue({
+      el: '#root',
+      components: {
+        counter
+      },
+      data: {
+        obj: {
+          a: 1
+        }
+      },
+      methods: {
+        change(){
+          this.obj.a = 2;
+        }
+      }
+    })
+
+  </script>
+
+</body>
+</html>
