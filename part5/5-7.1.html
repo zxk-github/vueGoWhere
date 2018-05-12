@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .v-enter{
+      opacity: 0;
+    }
+    .v-enter-active{
+      transition: opacity 1s;
+    }
+
+    .v-leave-to{
+      opacity: 0;
+    }
+    .v-leave-active{
+      transition: opacity 1s;
+    }
+
+  </style>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    <button @click="change">click</button>
+    <child :show="show">
+      <h2>hello world</h2>
+    </child>
+
+    <child :show="show">
+      <p>hello world</p>
+    </child>
+  </div>
+
+  <script>
+    Vue.component('child', {
+      props: ['show'],
+      template: `
+              <transition>
+                <slot v-if="show"></slot>
+</transition>
+              `
+    })
+
+
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        show: false
+      },
+      methods: {
+        change() {
+          this.show = !this.show
+        }
+      }
+
+    })
+  </script>
+</body>
+</html>

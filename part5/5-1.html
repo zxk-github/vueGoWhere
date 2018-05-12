@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .v-enter{
+      opacity: 0;
+    }
+    .v-enter-active{
+      transition: opacity 1s;
+    }
+
+    .v-leave-to{
+      opacity: 0;
+    }
+    .v-leave-active{
+      transition: opacity 1s;
+    }
+
+  </style>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    <button @click="change">click</button>
+    <transition>
+      <div v-if="show">hello world</div>
+    </transition>
+  </div>
+
+  <script>
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        show: false
+      },
+      methods: {
+        change() {
+          this.show = !this.show
+        }
+      }
+
+    })
+  </script>
+</body>
+</html>

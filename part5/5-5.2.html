@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .v-enter, .v-leave-to{
+      opacity: 0;
+    }
+    .v-enter-active, .v-leave-active{
+      transition: opacity 1s;
+    }
+  </style>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    <button @click="change">click</button>
+    <transition mode="in-out">
+      <component :is="type"></component>
+    </transition>
+  </div>
+
+  <script>
+    Vue.component('child-one', {
+      template: `<div>hello world</div>`
+    })
+    Vue.component('child-two', {
+      template: `<div>bye bye</div>`
+    })
+
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        type: 'child-one'
+      },
+      methods: {
+        change() {
+          this.type = this.type === 'child-one'? 'child-two': 'child-one'
+        }
+      }
+
+    })
+  </script>
+</body>
+</html>

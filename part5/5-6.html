@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .v-enter, .v-leave-to{
+      opacity: 0;
+    }
+    .v-enter-active, .v-leave-active{
+      transition: opacity 1s;
+    }
+  </style>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    <button @click="add">click</button>
+    <transition-group>
+      <div v-for="item in list" :key="item.id">{{item.title}}</div>
+    </transition-group>
+  </div>
+
+  <script>
+    var count = 0;
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        list:[]
+      },
+      methods: {
+        add() {
+          this.list.push({
+            id: count++,
+            title: `hello ${count}`
+          })
+        }
+      }
+    })
+  </script>
+</body>
+</html>
