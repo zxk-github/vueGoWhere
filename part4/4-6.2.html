@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    <child>
+      <!--<div class="header" slot="header">header</div>-->
+      <div class="footer" slot="footer">footer</div>
+    </child>
+  </div>
+
+  <script>
+
+    Vue.component('child', {
+      template: `
+        <div>
+          <slot name="header">default header</slot>
+          <div class="content">content</div>
+          <slot name="footer"></slot>
+        </div>
+      `
+    })
+
+    var vm = new Vue({
+      el: '#root'
+    })
+
+  </script>
+
+</body>
+</html>

@@ -97,7 +97,7 @@ methods: {
 这种方式，子组件中接收到的是一个字符串
 
 <counter :count="0"></counter>
-这种方式，子组件接受到的是一个数字，因为加了:， 双引号里面的内容实际上就是一个Js表达式了
+这种方式，子组件接受到的是一个数字，因为加了:， 双引号里面的内容实际上就是一个Js表达式了, 上面是一个数字
 
 var counter = {
   props: ['count'],
@@ -183,9 +183,11 @@ props: {
 }
 
 props: {
-  type: String,
-  validator: function(value){ //随传入的值通过校验器进行校验
-    return value.length > 5   //返回true通过， false不通过
+  content: {
+   type: String,
+   validator: function(value){ //随传入的值通过校验器进行校验
+     return value.length > 5   //返回true通过， false不通过
+   }
   }
 }
 
@@ -205,15 +207,92 @@ props特性
 如果不加.native, 这时候点击子组件不会触发，加了之后就会触发点击事件
 
 4-5 非父子组件间的传值
-两个组件之间进行传值，但是两个组件之间不是父子关系
+两个组件之间进行传值，但是两个组件之间不是父子关系时，数据的传递就会很复杂，当项目中出现了非常复杂的项目传值问题时，这时候可以通过引入第三方插件或者设计模式，解决VUE项目中非常复杂的传值问题
 
 1. vuex
-2. 发布订阅模式(Bus/总线/观察者模式)
+2. 发布订阅模式(Bus/总线机制/观察者模式)
 
+Vue.prototype.bus = new Vue()
 
+通过这种设置，在下面使用new Vue() 或者创建组件的时候，每一个组件上都会有bus属性，并且这个属性都指向统一个Vue实例
 
+例子依旧需要优化：不能打印两次， 如果多个多个，只想变两个
 
+4-6 在Vue中使用插槽 slot
+在很多第三方Vue的插件和模块中都大量使用插槽特性
 
+使用场景
+子组件需要展示P标签之外， 还要展示一段别的内容，但是这段内容并不是子组建决定的， 而是父组件传递过来的
 
+<child>
+  <p>asdsa</p>
+</child>
 
+Vue.component('child', {
+  template: `<div>
+              <p>hello world</p>
+              <slot>默认内容</slot>
+             </div>`
+})
+使用插槽可以很方便的父组件向子组件传递DOM内容，不传内容就会显示slot之间的默认值
 
+具名插槽
+
+<child>
+  <div class="header" slot="header">header</div>
+  <div class="footer" slot="footer">footer</div>
+</child>
+
+template: `
+  <div>
+    <slot name="header"></slot>
+    <slot name="footer></slot>
+  </div>
+`
+
+插槽只能由一个，具名插槽可以有多个
+
+具名插槽也可以有默认值
+<child>
+  <div class="footer" slot="footer">footer</div>
+</child>
+
+template: `
+  <div>
+    <slot name="header">default header</slot>
+    <slot name="footer"></slot>
+  </div>
+`
+
+4-7 Vue中的作用域插槽
+
+child组件的功能是当子组件某一部分功能是由外部传入的这时候使用作用域插槽，
+<child>
+  <template slot-scope="props">  //固定写法, props中保存的是slot传入的数据
+    <p>{{props.item}}</p>
+  </template>
+</child>
+
+template: `
+  <div>
+    <slot v-for="item of list" :item=item>
+
+    </slot>
+  </div>
+`
+
+父组件调用子组件的时候，给子组件传了一个作用域插槽， 作用域插槽必须是一个template开头和结尾的标签，其次template上面必须通过slot-scope声明，从子组件接收到的数据放在哪(slot-scope=“props”)，还有告诉子组件模板的信息(<p>{{props.item}}</p>),子组件可以向父组件作用域中传递数据，父组件中必须使用slot-scope接受传入的数据
+
+4-8 动态组件与v-once指令
+动态组件
+<component :is="type">
+
+</component>
+根据type的值，显示对应的名称的子组件，销毁刚才的组件
+
+v-once指令
+在进行足见切换的时候，Vue的底层都会销毁一个组件，然后再创建一个组件，这种切换是很耗费性能的， 如果组件的内容每次都一样，可以在组件模板上加上v-once指令，这样在进行切换的时候，会在不显示时候放到内存中，不会进行重复的销毁--创建过程, v-once 会显著提高静态资源的显示效率
+
+Vue.component('child-one', {
+  template: '<div v-once>child-once</div>'
+})

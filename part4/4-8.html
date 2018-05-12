@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="vue.js"></script>
+</head>
+<body>
+  <div id="root">
+    <component :is="type">
+
+    </component>
+    <button @click="clickChange">
+      click
+    </button>
+  </div>
+
+
+  <script>
+
+    Vue.component('child1', {
+      template: '<h1 v-once>child1</h1>'
+    })
+    Vue.component('child2', {
+      template: '<h1>child2</h1>'
+    })
+
+    var vm = new Vue({
+      el: '#root',
+      data: {
+        type: 'child1'
+      },
+      methods: {
+        clickChange() {
+          console.log(this.type)
+          this.type = this.type === 'child1'? 'child2': 'child1';
+        }
+
+      }
+
+    })
+
+  </script>
+
+</body>
+</html>

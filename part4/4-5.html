@@ -2,15 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>非父子组件间传值(Bus/总线/发布订阅模式/观察者模式)</title>
   <script src="vue.js"></script>
 </head>
 <body>
   <div id="root">
-
+    <child content="dell"></child>
+    <child content="lee"></child>
   </div>
 
   <script>
+    Vue.prototype.bus = new Vue();
+    Vue.component('child', {
+      props: {
+        content: String
+      },
+      data(){
+        return {
+          selfContent: this.content
+        }
+      },
+      template: '<div @click="handleClick">{{selfContent}}</div>',
+      methods: {
+        handleClick(){
+          this.bus.$emit('change', this.selfContent)   //向外触发事件
+        }
+      },
+      mounted(){
+        // 监听bus上触发出来的事件，因为在一个child组件中触发事件的时候，因为两个child组件都进行了同一个事件的监听， 所以两个组件都会打印出value值
+        this.bus.$on('change', (value) => {
+          console.log(value)
+          this.selfContent = value;
+        })
+      }
+
+    })
 
     var vm = new Vue({
       el: '#root',

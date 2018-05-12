@@ -29,7 +29,7 @@ vm.$el 会得到接管的区域，凡是以vm.$... $...都是Vue实例的属性�
 
 3-2 vue 实例的生命周期钩子
 vue实例--> 生命周期图示
-声明周期函数就是Vue实例在某一个时间点会自动执行的函数
+生命周期函数就是Vue实例在某一个时间点会自动执行的函数
 new Vue()
 init Events & Lifecycle //初始化事件和生命周期相关基础内容，之后会执行beforeCreate
 
@@ -41,7 +41,7 @@ init injections & reactivity //初始化注入和双向数据绑定相关的内�
 是: 渲染模板
 否: 把el元素对应的html当作模板(如果没有template,会把id="root"的div,整体当作一个模板，进行渲染)
 
-beforeMount 模板和数据结合，即将挂载到页面的一瞬间之前的时间点上执行,这个时候数据并没有被渲染到页面上，this.$el还没有数据的存在，但是已经不可以进行数据的改变了
+beforeMount 模板和数据结合，即将挂载到页面的一瞬间之前的时间点上执行,这个时候数据并没有被渲染到页面上，this.$el还没有数据的存在，可以进行数据的改变了
 
 mounted 模板和实例结合生成的Vue实例里面的DOM元素，会被挂载到页面上这时候执行mounted，这时候数据已经被渲染在页面上了,this.$el已经有数据的存在了
 
@@ -51,7 +51,7 @@ beforeUpdate 数据发生变化，还没有重新渲染之前，执行
 updated 重新渲染之后执行
 
 
-当vm.$destroy()这个方法被调用的时候，会触发beforeDestroy 和 destroyed
+当vm.$destroy()这个方法被调用的时候，会触发beforeDestroy 和 destroyed, //这个时候改变数据，还会触发update, 但是因为Vue实例已经销毁函数已经执行，页面不会发生变化
 
 beforeDestroy 组件即将被销毁的时候，会执行
 destroyed 完全销毁之后被执行

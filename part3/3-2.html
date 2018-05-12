@@ -34,6 +34,7 @@
         console.log('mounted')
       },
       beforeDestroy: function(){
+        //这个时候改变数据，还会触发update, 但是因为
         console.log('beforeDestroy')
       },
       destroyed(){

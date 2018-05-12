@@ -7,14 +7,26 @@
 </head>
 <body>
   <div id="root">
-
+    <child :content="'aaa'"></child>
   </div>
 
   <script>
+    Vue.component('child', {
+      props: {
+        content:{
+          type: String,
+          required: false,
+          default: 'hello word',
+          validate: function(value){
+            return true
+          }
+        }
+      },
+      template: '<div>{{content}}</div>'
+    })
 
     var vm = new Vue({
       el: '#root'
-
     })
 
   </script>
