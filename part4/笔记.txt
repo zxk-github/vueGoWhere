@@ -296,3 +296,4 @@ v-once指令
 Vue.component('child-one', {
   template: '<div v-once>child-once</div>'
 })
+
