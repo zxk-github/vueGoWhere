@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue实例上的属性和方法</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+    {{text}}
+  </div>
+
+  <script>
+    var app = new Vue({
+      data: {
+        text: 1
+      }
+    })
+    app.$mount("#app")
+
+    app.text = 3
+    // Vue实例上的属性
+    console.log(app.$data)  //初始化Vue实例的，data的值
+    console.log(app.$props)
+    console.log(app.$el)  //Vue实例的挂载DOM节点
+    console.log(app.$options) //初始化Vue实例传入的参数，以及Vue实例初始化时候的一些默认值
+    app.$options.data.text = 5  //通过$options上面的数据，是不起作用的
+    app.$data.text = 7  //说明挂载在Vue实例上的text和$data上的text是同一个属性
+    // app.$options.render = (h) => {
+    //   return h('div', {}, 'new render function');
+    // } //在第一次进行渲染的时候，不会起作用，只有当页面中的有值得变化，下一次重新渲染的时候，会起作用
+    console.log(app.$root) //返回根节点(这个例子是app)
+    console.log(app.$root === app) //在整个Vue应用中，每一个节点都可以进行调用，并且获取到的都是同一个节点--->根节点
+    //<item><div>11</div></item>
+    console.log(app.$children) //返回数组中包含div
+    console.log(app.$slots)
+    console.log(app.$scopedSlots)
+    console.log(app.$refs) //对应模板中某一个节点，帮助我们快速获取到对应需要的节点，如果是html节点，会返回节点对应的DOM对象，如果是组件，会返回组件对应的Vue实例
+    console.log(app.$isServer) //有些代码可以在服务端运行，有些只能在服务端运行，可以通过这个来进行判断
+    const unWatch = app.$watch('text', (newText, oldText) => {
+      console.log(`${newText} ${oldText}`)
+    })  //和在初始化Vue实例的时候，初始化watch属性效果一样，每次text在变化的时候，都会监听到变化，然后返回对应的newText和oldText
+    // watch:{
+    //   text(newText, oldText) {
+    //     console.log(newText, oldText)
+    //   }
+    // }
+    app.$data.text = 9
+    // unWatch();
+    // app.$data.text = 11
+    // 数用初始化时候，注入watch在Vue实例销毁的时候，watch也会被销毁，但是使用app.$watch，需要手动销毁
+    app.$on('test', (a, b)=> {
+      console.log('test事件触发', a, b)
+    }) //$on监听，当监听到的事件触发的时候，执行回调函数, $once只会被触发一次
+    app.$emit('test',1 , 2) //$emit触发一个事件，并且触发和监听在同一个Vue实例上才会起作用
+    app.$forceUpdate()  //强制组件重新渲染一次
+    app.$set()
+    app.$delete() //删除data上的对象的值
+
+    //Vue的渲染过程是异步的，比如说改变了app.text，并不是把每一次的改变都展现在页面上，Vue存在一个异步的队列，比如说一次改了5次，只会渲染一次，而不是每次都会渲染出来， 因为是异步渲染，所以有时会操作DOM， 每次DOM节点更新之后，都做某一个对DOM节点的直接操作， 这时候需要等待DOM节点的真正渲染完成，这时候可以调用app.$nextTick()，在下次DOM进行更新的时候，才会调用回调函数
+    app.$nextTick()
+  </script>
+
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>app.forceUpdate</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+    {{text}}
+    {{obj.a}}
+  </div>
+
+  <script>
+    var app = new Vue({
+      data: {
+        text: 1,
+        obj: {
+
+        }
+      }
+    })
+    app.$mount('#app')
+    let i = 0;
+    // setInterval(() => {
+    //   i++;
+    //   app.$data.obj.a = i
+    //   app.$forceUpdate()
+    // },1000)
+    setInterval(() => {
+      i++
+      app.$set(app.obj, 'a', i)
+    }, 1000)
+
+    // app.$forceUpdate()  //强制组件重新渲染一次
+  </script>
+
+  Vue是一个响应式的框架，如果在页面中使用的某一个对象的属性没有声明，那么这个对象的未声明属性进行赋值的时候，就是非响应式的， 未声明属性在变化的时候，就不会引起页面的重新渲染，这时候有两种解决办法
+1. 使用app.$forceUpdate() 进行页面的强制渲染
+2. 使用app.$set(app.obj, a , i)
+3. 在进行Vue实例初始化的时候，直接把a属性初始化进去
+</body>
+</html>

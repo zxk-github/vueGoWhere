@@ -1,0 +1,23 @@
+当一个文件以.vue结尾的时候，管这个文件叫单文件组件
+
+vue 路由
+路由就是根据网址的不同返回不同的内容给用户
+
+<router-view/>
+显示当前路由地址所对应的内容
+
+import HelloWorld from '@/components/HelloWorld'
+@代表src目录
+
+
+
+
+
+
+
+
+
+
+
+
+
