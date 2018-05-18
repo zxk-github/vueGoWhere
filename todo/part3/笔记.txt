@@ -1,105 +1,89 @@
-5-1 Vue中的css动画
-<transition name="fade">
-  <div>hello world</div>
-</transition>
+3-2 生命周期钩子
+Vue的生命周期实际上就是Vue实例的生命周期
 
-v-if v-show 动态组件 都能产生动画效果
+如果没有指定Vue实例挂载点，只会执行beforeCreate和created
 
-需要动画的部分使用transition标签包裹，
+因为mount就是把组件生成的html内容，挂载到DOM上的一个过程，如果不指定Vue实例挂载点，就不会挂载到节点
 
-动画原理
+数据更新的时候会执行beforeUpdate和updated
 
-动画进入的时候
-当一个模块被transition包裹之后，Vue会自动的分析css样式，然后构建一个动画的流程，在动画即将执行的一瞬间，会在动画执行的DOM元素上增加两个class, 分别是fade-enter和fade-enter-active, 然后在动画执行第二针时候，去除掉fade-enter, 再增加一个fade-enter-to的class, 接着继续执行动画，在动画执行的一瞬间，会把fade-enter-active和fade-enter-to这两个class去除掉
+组件销毁，会解除掉我们所有的事件监听和watch
 
-动画离开的时候
-首先vue会先自动构建动画流程，隐藏的第一个瞬间，添加fade-leave和fade-leave-active俩个class, 在第二针的时候，会去除fade-leave，并增加fade-leave-to这个class, 在动画结束之后，会把fade-leave-active和fade-leave-to都给去除掉
+beforeCreate
+created 这两个生命周期，this.$el都是undefined
+beforeMount 是Vue实例的挂载点
+mounted 如果有template this.$el会变成template, 没有依旧是挂载点，所以对挂载点的操作应该放在mounted里面进行
 
-name="fade"
-css class命名以fade开头
+** 并且在服务端渲染的时候，beforeMount和mounted不会执行， 因为beforeMount和mounted和DOM有关， 在服务端没有DOM的执行环境，所以不会执行
 
-不写name,默认以v开头
+beforeCreate 不要进行数据相关的操作
+created
 
-5-2 在Vue中使用animate.css
-必须使用自定义class名字这种形式
-<transition name="fade" enter-active-class="animated swing" leave-active-class="animated shake">
-      <div v-if="show">hello world</div>
-</transition>
-
-5-3 在vue中同时使用过渡和动画
-在元素第一次显示时候，也添加效果
-在transition标签上添加appear和appear-active-class属性
-
-<transition name="fade"
-            enter-active-class="animated swing"
-            leave-active-class="animated shake"
-            appear
-            appear-active-class="animated swing"
->
-  <div v-if="show">hello world</div>
-</transition>
-
-给元素加上过渡动画效果
-type="transition"
-当动画和过渡时间不一样时候，设置以transition为准
-
-:duration="10000" 自定义设置动画持续时长， F12可以看到在10s之后元素上的动画class才消失
-
-:duration="{enter: 5000, leave: 3000}"
-F12之后发现，入场class在5000ms之后移除，出场class在3000ms之后移除
-
-5-4 Vue中的js动画与Velocity.js的结合
-
-<transition name="fade">
-
-</transition>
-
-js动画中的钩子
-@before-enter="handleBeforeEnter" 即将显示之前执行
-@enter 运行动画的时候
-@after-enter 动画结束之后运行
-
-@before-leave
-@leave
-@after-leave
-
-5-5 Vue中多个元素或者组件的过渡
-
-<transition>
-  <div v-if="show">hello world</div>
-  <div v-else></div>
-</transition>
-Vue在默认尽可能复用DOM，所以在进行切换的时候，不会出现动画，添加key值，可以使Vue不进行DOM的复用
-<transition>
-  <div v-if="show" key="hello">hello world</div>
-  <div v-else key="bye">bye</div>
-</transition>
-
-设置mode可以设置动画
-<transition mode="in-out"></transition>
-mode="in-out" 多个元素的时候，先进入结束在隐藏
-mode="out-in" 先隐藏 再进入
-
-5-6 列表过渡
-
-<transition-group>
-  <div v-for="item of list" :key="item.id">
-    {{item.title }}
-  </div>
-</transition-group>
-
-这样就相当于在每个div外层都增加了一个<transition></transition>，这个时候一组元素过渡就变成了单个元素的过渡，Vue会找到对应的动画时间点，增加对应的class名称
-
-5-7 Vue中的动画封装
-可以将css 通过js的封装，仅仅需要引入组件即可
+在实际项目文件中，直接使用.vue文件进行开发的时候， 都是没有template的，因为.vue中的template都经过了vue-loader进行处理, 直接变成了一个render function
 
 
+template: "<div>{{msg}}</div>"
+//实际Vue会转换成下面
+render(h) {
+  console.log('render function invoked');
+  return h('div', {} , this.msg);
+},
+renderError(h, err) {  //只会在开发环境出现，调试render中的错误5
+  return h('div', {}, err.stack)
+},
+errorCaptured() {
+  //捕获错误，子组件也能捕获到，正式环境也能使用
+}
 
+3-5 computed和watch
 
+computed 监听某个值依赖的变化
 
+watch 监听到一个数据变化，然后执行某些操作, 很适合使用
+在页面进行初始化的时候不会执行，只有在产生变化的时候才会执行函数
+watch: {
+  firstName: {
+    handler(newName) {
+      this.fullName = newName
+    },
+    immediate: true
+  }
+}
+// 这个会在初始化时候也执行一次
 
+watch: {
+  firstName(newName) {
+    this.fullName = newName
+  }
+} // 在初始化时候不会执行
 
+watch: {
+  obj: {
+    handler() {
+      console.log('a 变化了')
+    },
+    immediate: true,
+    deep: true //深度监听对象属性的变化，遍历obj里面的每一个属性，然后都加上handler，监听变化
+  }
+}
 
+watch: {
+  'obj.a': {
+    handler() {
+
+    },
+    immediate: true
+  }
+}
+
+3-6 Vue指令
+v-text
+v-html
+v-bind:id --> :
+v-bind:value --> :value
+v-model
+
+3-7
 
 
 
