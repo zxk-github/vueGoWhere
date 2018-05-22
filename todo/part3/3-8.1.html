@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>组件继承2</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+
+  </div>
+
+  <script>
+    
+    const component = {
+      props: {
+        active: {
+          type: Boolean
+        },
+        text: String
+      },
+
+      template: `
+        <div>
+          <input type="text" v-model="text"/>
+          <span v-if="active">show</span>
+          <button @click="handleClick">click</button>
+          <p>{{aa}}</p>
+        </div>
+      `,
+      methods: {
+        handleClick(){
+          this.$emit('change');
+        }
+      },
+      data() {
+        return {
+          aa: 123
+        }
+      },
+      mounted() {
+        console.log("child mounted")
+      }
+    }
+
+    const component2 = {
+      extends: component,
+      data(){
+        return {
+          aa: 1234
+        }
+      },
+      mounted() {
+        console.log('component2')
+      }
+    }
+
+    new Vue({
+      el: '#app',
+      components: {
+        comp: component2
+      },
+      template: `
+        <comp> </comp>
+       `
+    })
+
+  </script>
+</body>
+</html>

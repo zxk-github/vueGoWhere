@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>组件继承</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+
+  </div>
+
+  <script>
+    
+    const component = {
+      props: {
+        active: {
+          type: Boolean,
+          required: true
+        },
+        text: String
+      },
+
+      template: `
+        <div>
+          <input type="text" v-model="text"/>
+          <span v-if="active">show</span>
+          <button @click="handleClick">click</button>
+          <p>{{aa}}</p>
+        </div>
+      `,
+      methods: {
+        handleClick(){
+          this.$emit('change');
+        }
+      },
+      data() {
+        return {
+          aa: 123
+        }
+      },
+      mounted() {
+        console.log("child mounted")
+      }
+    }
+
+    const compVue = Vue.extend(component)
+
+    new compVue({
+      el: '#app',
+      // props: {
+      //   active: true
+      // }  //不会报错，但是不会改变component 中props的值
+      propsData: {
+        active: true,
+        text: 'aaa'
+      },  //通过propsData，就可以传入值
+      data: {
+        aa: 1234 //通过外面传入的data可以覆盖内部的data
+      },
+      mounted() {
+        console.log('instance') //先调用child
+      }
+
+    })
+  </script>
+</body>
+</html>

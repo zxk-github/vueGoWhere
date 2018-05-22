@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>render方法</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+
+  </div>
+
+  <script>
+    const comp = {
+      props: ['props1'],
+      // template: `
+      //   <div :style="style">
+      //     <slot></slot>
+      //   </div>
+      // `
+      render(createElement) {
+        return createElement('div', {
+          // style: this.style
+          // on: {
+          //   click: ()=> this.$emit('click')
+          // }
+        }, [
+          // this.$slots.default,//没有名字是default, 有名子是名字
+          this.$slots.header,
+          this.props1
+
+        ]) //没有名字是default, 有名子是名字
+      }
+    };
+
+    const app = new Vue({
+      components: {
+        comp: comp
+      },
+      data: {
+        value: '123'
+      },
+      methods: {
+        handleClick() {
+          console.log('2134231')
+        }
+      },
+      // template: `
+      //   <comp ref="comp">
+      //     <span ref="span">{{value}}</span>
+      //   </comp>
+      // `
+      render(createElement) {
+        return createElement('comp', {
+          ref: 'comp', //传给节点属性 attr props ref on
+          props: {
+            props1: this.value
+          },
+          // on: {
+          //   click: this.handleClick
+          // }
+          nativeOn: {
+            click: this.handleClick
+          },
+        }, [
+          createElement('span', {
+            ref: 'span',
+            slot: 'header',
+            // domProps: {
+            //   innerHTML: '<span>"AAAAAA"</span>'
+            // }, //dom的一些方法
+            attrs: {
+              id: 'aaa' //DOM 属性
+            }
+          }, this.value )  //传入子节点, 使用字符串时候，不需要使用数组， 使用子节点需要使用数组进行表明
+        ])
+        //名字，属性
+      }
+
+    }).$mount('#app')
+  </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>vue原生指令</title>
+  <title>全局组件定义</title>
   <script src="./vue.js"></script>
 </head>
 <body>
@@ -11,10 +11,14 @@
   </div>
 
   <script>
-    var app = new Vue({
-      data: {
+    var component = {
+      template: '<div>this is a component</div>'
+    }
 
-      },
+    Vue.component('CompOne', component);
+
+    var app = new Vue({
+      template: '<comp-one></comp-one>'
 
     }).$mount('#app')
   </script>

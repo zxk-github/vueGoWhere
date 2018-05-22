@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>局部组件定义</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+
+  </div>
+
+  <script>
+    var data = {
+      msg: ''
+    }
+
+    var component = {
+      template: `
+        <div>
+          <input type="text" v-model="msg">
+        </div>
+      `,
+      data(){
+        // return data
+        return {
+          msg: ''
+        }
+      }
+    }
+
+    // Vue.component('CompOne', component);
+
+    var app = new Vue({
+      components: {
+        CompOne: component
+      },
+      template: `
+        <div>
+          <comp-one></comp-one>
+          <comp-one></comp-one>
+        </div>
+      `
+
+    }).$mount('#app')
+  </script>
+</body>
+</html>

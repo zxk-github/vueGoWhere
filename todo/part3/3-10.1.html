@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>全局组件定义</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+
+  </div>
+
+  <script>
+
+    const component = {
+      template: `
+        <div>
+         <slot name="header"></slot>
+         <slot name="body" :value="value"></slot>
+        </div>
+      `,
+      data() {
+        return {
+          value: 345
+        }
+      }
+    }
+
+
+    new Vue({
+      el: '#app',
+      components: {
+        comp: component
+      },
+      data: {
+        value: '123'
+      },
+      template: `
+        <div>
+          <comp>
+            <div slot="header">
+              this id header{{value}}
+            </div>
+
+            <div slot="body" slot-scope="props">
+              this is body{{props.value}}
+            </div>
+
+            </comp>
+
+        </div>
+      `
+
+    })
+
+  </script>
+</body>
+</html>

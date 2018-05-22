@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue组件自定义双向数据绑定</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+
+  </div>
+
+  <script>
+    const component = {
+      props: ['value'],
+      template: `
+        <div>
+          <input type="text" :value="value" @input="handleInput">
+
+        </div>
+      `,
+      methods: {
+        handleInput(e) {
+          this.$emit('input', e.target.value)
+        }
+      }
+    }
+
+    new Vue({
+      el: '#app',
+      components: {
+        comp: component
+      },
+      template: `
+        <div>
+          <!--<comp :value="value" @input="value = arguments[0]"></comp>-->
+          <comp v-model="value"></comp>
+          <p>{{value}}</p>
+        </div>
+      `,
+      data: {
+        value: '123'
+      }
+
+    })
+
+  </script>
+</body>
+</html>

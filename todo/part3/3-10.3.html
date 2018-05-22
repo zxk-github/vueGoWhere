@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>provider</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+
+  </div>
+
+  <script>
+    const grandChild = {
+      template: `
+        <div>
+          this is grandChild: {{data1}}
+        </div>
+      `,
+      inject: [
+        // 'value'
+        'data1'
+      ]
+    }
+
+    const child = {
+      template:  `
+        <div>
+          <p>this is child: {{value}}</p>
+          <grandChild></grandChild>
+        </div>
+      `,
+      components: {
+        grandChild
+      },
+      props: {
+        value: String
+      }
+    }
+
+
+    new Vue({
+      el: '#app',
+      components: {
+        child
+      },
+      provide() {
+        // return {
+        //   value: this.value
+        // }
+
+        const data1 = {};
+        Object.defineProperty(data1, 'value', {
+          get: () => {
+            return this.value
+          },
+          enumerable: true
+        } );
+        return {
+          data1
+        }
+      },
+      data: {
+        value: '123'
+      },
+      template: `
+        <div>
+          <p>vue:{{value}}</p>
+          <input type="text" v-model="value">
+          <child :value="value"></child>
+        </div>
+      `
+    })
+
+  </script>
+</body>
+</html>

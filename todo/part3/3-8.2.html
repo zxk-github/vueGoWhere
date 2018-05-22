@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>parent</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+
+  </div>
+
+  <script>
+    
+    const component = {
+      props: {
+        active: {
+          type: Boolean
+        },
+        text: String
+      },
+
+      template: `
+        <div>
+          <input type="text" v-model="text"/>
+          <span v-if="active">show</span>
+          <button @click="handleClick">click</button>
+          <p>{{aa}}</p>
+        </div>
+      `,
+      methods: {
+        handleClick(){
+          this.$emit('change');
+        }
+      },
+      data() {
+        return {
+          aa: 123
+        }
+      },
+      mounted() {
+        console.log("child mounted")
+      }
+    }
+    const parent = new Vue({
+      name: 'parent',
+      data: {
+        aa: 12345
+      }
+
+    })
+    const component2 = {
+      parent: parent,
+      extends: component,
+      data(){
+        return {
+          aa: 1234
+        }
+      },
+      mounted() {
+        console.log('component2')
+        console.log(this.$parent.$options.name)
+      }
+    }
+
+    new Vue({
+      name: 'root',
+      parent: parent,
+      el: '#app',
+      components: {
+        comp: component2
+      },
+      template: `
+        <comp> </comp>
+       `,
+      mounted() {
+        console.log(this.$parent.$options.name)
+      }
+    })
+
+  </script>
+</body>
+</html>

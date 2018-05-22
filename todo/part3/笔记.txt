@@ -83,7 +83,150 @@ v-bind:id --> :
 v-bind:value --> :value
 v-model
 
-3-7
+3-7 组件的定义
+
+new Vue() 的时候也是定义一个组件
+
+一个Vue的组件实际上是一个类
+
+在定义子组件的时候，return一个全新的对象，不能return一个全局已经存在的对象
+
+props 用来定义组件在被外部使用的时候一些可变的行为的，定义组件的原则是希望组件帮助解决一些通用性的问题，但是可能一些不同场景需要不同的不同的行为，这些不同的行为就是通过props来体现出来
+
+props 是外部组件约束子组件行为的，所以不应该在子组件内部直接修改prop传进来的值
+
+如果需要改变props中的值，可以在子组件内部触发一些事件，告诉外部组件，子组件改了哪些东西，父组件可能会改变传入的值 
+
+
+props: {
+  active: {
+    type: Boolean,
+    required: true/false,
+    //default: true,
+    default() {
+      return {
+        a: 1
+      }
+    }
+
+    validate(val) {
+      return typeof val === 'boolean' 
+    }
+  }
+}
+
+3-8 组件继承
+
+const compVue = Vue.extend(component)
+这时候会创建一个Vue类的子类，只是在component里面已经预先设定好了一些属性， 实际上在Vue中本身就自带很多配置
+
+属性合并
+new compVue({
+  el: '#app',
+  // props: {
+  //   active: true
+  // }  //不会报错，但是不会改变component 中props的值
+  propsData: {
+    active: true,
+    text: 'aaa'
+  },  //通过propsData，就可以传入值
+  data: {
+    aa: 1234 //通过外面传入的data可以覆盖内部的data
+  },
+  mounted() {
+    console.log('instance') //先调用child
+  }
+})
+
+基础东西，扩展组件
+
+在子组件内部，可以直接通过this.$parent调用父组件实例，改变父组件中的数据
+this.$parent
+this.$parent.$options.name
+this.$parent.text = 11
+
+
+组件内部也可以执行parent是谁
+var component = {
+  parent: component1
+}
+
+在进行new Vue的时候，才能进行指定parent是什么， 如果声明一个组件，组件是通过模板的形式进行编译的，这时候的parent是Vue进行渲染的时候指定的，没有办法进行修改
+
+3-9 Vue组件自定义双向数据绑定
+组件实现v-model双向数据绑定的支持
+
+3-10 插槽
+slot 实现页面内容的继承关系
+
+作用域插槽 可以使得数据使用子组件里面的数据
+
+template: `
+  <div>
+    <comp ref="com">
+      <div slot="header" ref="div">
+        this id header{{value}}
+      </div>
+
+      <div slot="body" slot-scope="props">
+        this is body{{props.value}}
+      </div>
+
+      </comp>
+
+  </div>
+`,
+mounted() {
+  console.log(this.$refs.com) // 得到的是组件的实例
+  console.log(this.$refs.div) // 得到的是DOM元素引用
+}
+
+跨级通信 使用provide和inject组和
+
+3-11 render
+字符串变成页面中的DOM节点，在使用template的时候，会经过生命周期里面的一个过程（编译），把template转换成了一个render方法
+
+$createElement() 是Vue创建节点的一个函数，每个Vue实例上都有这个函数
+
+render () {
+  return this.$createElement();
+}
+
+template: `
+  <comp-one ref="comp">
+    <span ref="span">{{value}}<span>
+  </comp-one>
+`
+
+render(createElement) {
+  return createElement('comp-one', {
+    ref: 'comp'
+  }, [
+    createElement('span', {
+      ref: 'span'
+    }, this.value)
+  ])
+}
+
+组件中
+template: `
+  <div :style="style">
+    <slot></slot>
+  </div>
+`
+
+render(createElement) {
+  return createElement('div', {
+    style: this.style
+  }, this.$slots.default)
+}
+
+createElement会创建出来一个Vnode的一个类， Vnode是在内存中存储的一个类似DOM结构的结构，会和真正的DOM结构进行对比，如果发现DOM需要更新，才会把Vnode转换成真正DOM，然后渲染到页面中
+
+
+
+
+
 
 
 

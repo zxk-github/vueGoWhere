@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>props</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app" ref="div">
+
+  </div>
+
+  <script>
+
+    const component = {
+      template: `
+        <div>
+          <div>
+            <input type="text" />
+            <span v-if="active">show</span>
+            <div>
+              {{msg}}
+            </div>
+            <button @click="handleChange">click</button>
+          </div>
+        </div>
+      `,
+      props: {
+        active: Boolean,
+        msg: String,
+        onChange: Function
+      },
+
+      // mounted() {
+      //   this.msg = 'sss'
+      // },
+      
+      methods: {
+        handleChange() {
+          this.onChange()
+        }
+      }
+    }
+
+    var vm = new Vue({
+      el: '#app',
+      
+      components: {
+        compOne: component
+      },
+
+      template: `
+        <div>
+          <comp-one :active="true" :msg="text1" :on-change="handleChange"></comp-one>
+          <comp-one :active="false" msg="text2"></comp-one>
+        </div>
+      `,
+      data: {
+        text1:'test1'
+      },
+      methods: {
+        handleChange() {
+          this.text1 += 1
+        } 
+      }
+
+    })
+
+
+  </script>
+</body>
+</html>
