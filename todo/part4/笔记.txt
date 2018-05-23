@@ -1,0 +1,45 @@
+4-1
+
+4-2
+
+redirect 进入页面直接打开一个新页面
+{
+  path: '/', redirect: '/home'
+},
+{
+  path: '/home', component: home
+}
+
+正常的路由是不会包含#号的，#代表页面中的某一个位置，并且#不会被搜索引擎解析，所以SEO不好
+const router = new VueRouter({
+  routes: routes,
+  mode: 'history', //去除#号， 默认不去除
+  // base: '/base/',  //默认在path前加上base的值1，但是原来路径依然可以使用
+  linkActiveClass: 'active-link', //部分匹配时候就会加上
+  linkExactActiveClass: 'exact-active-link',  // 完全匹配时候会加上对应的class
+  // 这两个可以在全局写一些class, 指定链接被激活时候的状态
+  scrollBehavior(to, from , savedPosition ) {
+    // to  去的路由
+    // from  从拿来
+    // savedPosition 在原来页面滚动条滚动到的位置
+    if(savedPosition ) {
+      return savedPosition;
+    } else {
+      return { x: 0, y : 0}
+    }
+
+  },  //页面路径进行跳转时候，需不需要保持保存上个页面滚动的位置
+  parseQuery (query) {
+    // 自定义 字符串转为json
+  },
+
+  stringifyQuery(obj) {
+    // 自定义 对象转字符串
+  },
+  fallback: true //并不是所有浏览器都支持页面不调转但是页面切换了这种形式， 不支持时候，设置位false, Vue会使用hash形式, 每次路由跳转都会向后台发起一次请求
+
+});
+
+4-3 路由参数传递
+
+

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .fade-enter-active, .fade-leave-active{
+      transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to{
+      opacity: 0;
+    }
+
+  </style>
+</head>
+<body>
+  <script src="vue.js"></script>
+  <script src="vue-router.js"></script>
+
+  <div id="app">
+    <h1>hello world</h1>
+    <p>
+      <router-link to="/home?a=1&b=2">to home</router-link>
+      <router-link :to="{name: 'home'}">to home name</router-link>
+      <router-link to="/bar/1">to bar</router-link>
+
+    </p>
+    <transition name="fade">
+      <router-view></router-view>
+    </transition>
+  </div>
+
+  <script>
+    const home = {
+      template: `
+        <div>
+          <h2>home</h2>
+          <router-view></router-view>
+        </div>
+      `,
+      mounted() {
+        console.log(this.$route)
+      }
+    }
+
+    const bar = {
+      template: `<h2>bar</h2>`,
+      mounted() {
+        console.log(this.$route)  //得到路由中包含的所有信息
+        console.log(this.id)
+      },
+      props: ['id']
+    }
+
+    const routes = [
+      {
+        path: '/home',
+        component: home,
+        name: 'home',
+        meta: {
+          title: 'this is home',
+          description: 'aaa'
+        }, // 保存路由信息
+        children: [
+          {
+            path: 'homeChild',
+            component: bar
+          }
+        ] // 子路由
+      },
+      {
+        path: '/bar/:id',   // /bar/***
+        component: bar,
+        // props: (route) => {
+        //   return {
+        //     id: sadfsdafs
+        //   }
+        // }
+        props: {
+          id: 'qqq'
+        }
+        //props: true, // props 定义为true之后，会把:id, 作为bar组件的props传入直接传入组件里面, 这样就可以不需要this.$router就能获取路由参数 ， 还可以自定义props
+      }
+
+    ]
+
+    const router = new VueRouter({
+      routes: routes
+    })
+
+    const app = new Vue({
+      router: router
+
+    }).$mount('#app')
+  </script>
+
+
+
+</body>
+</html>
