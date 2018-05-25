@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>路由配置中的钩子</title>
+</head>
+<body>
+  <script src="vue.js"></script>
+  <script src="vue-router.js"></script>
+
+  <div id="app">
+    <h1>hello world</h1>
+    <p>
+      <router-link to="/home">to home</router-link>
+      <router-link to="/bar">to bar</router-link>
+    </p>
+
+    <router-view></router-view>
+
+    <p>显示other router view</p>
+    <router-view name="other"></router-view>
+
+  </div>
+
+  <script>
+    const home = {
+      template: `<h2>home</h2>`
+    }
+
+    const bar = {
+      template: `<h2>bar</h2>`
+    }
+
+    const other = {
+      template:  `<h2>other</h2>`
+    }
+
+    const routes = [
+      {
+        path: '/home',
+        components: {
+          default: home,
+          other: other
+        }
+      },
+      {
+        path: '/bar',
+        component: bar,
+        beforeEnter(to, from, next) {
+          //进入路由之前调用
+          console.log('before enter')
+          next()
+
+        }
+
+      }
+
+    ]
+
+    const router = new VueRouter({
+      routes: routes
+    })
+
+    const app = new Vue({
+      router: router
+
+    }).$mount('#app')
+  </script>
+
+
+
+</body>
+</html>

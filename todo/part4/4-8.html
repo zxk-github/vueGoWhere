@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vuex模块</title>
+</head>
+<body>
+  <script src="vue.js"></script>
+  <script src="vue-router.js"></script>
+  <script src="vue-vuex.js"></script>
+  <div id="app">
+    <h1>hello world</h1>
+    <p>
+      <router-link to="/home">to home</router-link>
+      <router-link to="/bar">to bar</router-link>
+    </p>
+
+    <router-view></router-view>
+
+    <p>显示other router view</p>
+    <router-view name="other"></router-view>
+
+  </div>
+
+  <script>
+    const home = {
+      template: `<h2>home</h2>`
+    }
+
+    const bar = {
+      template: `<h2>bar{{count}} {{msgA}} {{msgB}} {{getterModuleA}} {{getterModuleB}}</h2>`,
+      mounted() {
+        var i = 0;
+        // setInterval(() => {
+        //   // i++;
+        //   this.$store.commit('increase', {num1:1, num2: 2})
+        // }, 1000)
+        this.$store.dispatch('updateCountAsync', {num1:2, num2: 5})
+
+        // setInterval(() => {
+        //   this.$store.commit('updateMsg', 'aa')
+        // },1000)
+
+        setInterval(() => {
+          this.$store.commit('moduleB/updateMsgB', 'moduleB111')
+        }, 1000)
+      },
+      computed: {
+        count() {
+          return this.$store.state.count;
+        },
+
+        msgA() {
+          return this.$store.state.moduleA.msg;
+        },
+
+        fullName() {
+
+        },
+
+        msgB() {
+          return this.$store.state.moduleB.msg;
+        },
+
+        getterModuleA() {
+          return this.$store.getters.msgAGetter;
+        },
+
+        getterModuleB() {
+          return this.$store.getters['moduleB/msgBGetter']
+        }
+      }
+    }
+
+    const other = {
+      template:  `<h2>other</h2>`
+    }
+
+    const routes = [
+      {
+        path: '/home',
+        components: {
+          default: home,
+          other: other
+        }
+      },
+      {
+        path: '/bar',
+        component: bar
+      }
+
+    ]
+
+    const state = {
+      count: 0,
+      firstName: 'zhang',
+      lastName: 'xk'
+    }
+
+
+    const mutations = {
+      increase(state, {num1, num2} ) {
+        console.log(num1, num2)
+        state.count ++ ;
+      }
+    }
+
+    const getters = {
+      fullName(state) {
+        return state.firstName + state.lastName
+      }
+    }
+
+    const actions = {
+      updateCountAsync(store, {num1, num2}){
+        setTimeout(() => {
+          store.commit('increase', num1)
+        }, 2000)
+      }
+    }
+
+    const store  = new Vuex.Store({
+      // strict: process.env.NODE_ENV === 'development'
+      strict: true,  //防止直接修改store里面的数据
+      state,
+      getters,
+      mutations,
+      actions,
+      modules: {
+        moduleA: {
+          state: {
+            msg: 'moduleA'
+          },
+          mutations: {
+            updateMsg(state, msg) {
+              // 这里面的state仅仅表示当前模块的state
+              state.msg  = state.msg + msg
+            }
+          },
+          getters: {
+            msgAGetter(state) {
+              return state.msg + 1;
+            }
+          }
+        },
+        moduleB: {
+          namespaced: true,
+          state: {
+            msg: 'moduleB'
+          },
+          mutations: {
+            updateMsgB(state, msg) {
+              state.msg = msg
+            }
+          },
+          getters: {
+            msgBGetter(state, getters, rootState) {
+              // state 当前模块的state
+              // getters 当前模块所有的getter方法
+              // rootState 全局的state
+              console.log(getters)
+              console.log(rootState)
+
+              return state.msg + 2;
+            }
+          },
+          actions: {
+            //add(context) {
+            add({state, commit, rootState}){
+              // context 当前模块的state, commit, rootState
+
+            }
+          }
+        }
+      }
+    })
+
+
+    const router = new VueRouter({
+      routes: routes
+    })
+
+    const app = new Vue({
+      router: router,
+      store
+
+    }).$mount('#app')
+  </script>
+
+
+
+</body>
+</html>

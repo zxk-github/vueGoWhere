@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>组件里面增加守卫</title>
+</head>
+<body>
+  <script src="vue.js"></script>
+  <script src="vue-router.js"></script>
+
+  <div id="app">
+    <h1>hello world</h1>
+    <p>
+      <router-link to="/home">to home</router-link>
+      <!--<router-link to="/bar">to bar</router-link>-->
+      <router-link to="/bar/1">to bar</router-link>
+      <router-link to="/bar/2">to bar</router-link>
+      <router-link to="/bar2">to bar2</router-link>
+    </p>
+
+    <router-view></router-view>
+
+    <p>显示other router view</p>
+    <router-view name="other"></router-view>
+
+  </div>
+
+  <script>
+    const home = {
+      template: `<h2>home</h2>`
+    }
+
+    const bar = {
+      beforeRouteEnter(to, from, next) {
+        console.log('before Enter')
+        //在这里面拿不到当前组件的实例(this undefined)，因为next没有执行，组件还没有创建
+        next(vm => {
+          // vm 代表组件被创建之后的this
+          console.log(vm.id1)  //可以在这里拿到数据，然后操作
+          vm.id1 = '1111'
+        }) // 进入组件时候才会执行
+      },
+      beforeRouteUpdate(to, from, next) {
+        console.log('before update')
+        next() // 同一个组件在统一路由变化下显示的时候并且数据发生变化时候会被触发， 通过props的数据传递不会触发， 这时候，因为不存在组件的销毁和创建，所以enter和leave不会触发
+      },
+      beforeRouteLeave(to, from, next) {
+        console.log('before leave')
+        if(window.confirm('are you sure')) {
+          next();
+        }
+        //next() //离开组件时候才会执行
+      },
+      template: `<h2>bar{{id1}}</h2>`,
+      props: ['id'],
+      data() {
+        return {
+          id1: this.id
+        }
+      },
+      mounted() {
+        console.log(this.$route.params.id)
+        this.id1 = this.$route.params.id;
+      }
+    }
+
+    const other = {
+      template:  `<h2>other</h2>`
+    }
+
+    const routes = [
+      {
+        path: '/home',
+        components: {
+          default: home,
+          other: other
+        }
+      },
+      {
+        path: '/bar/:id',
+        component: bar,
+        props: {
+          id: '111'
+        }
+      },
+      {
+        path: '/bar2',
+        component: bar,
+        props: {
+          id: '222'
+        }
+      }
+
+    ]
+
+    const router = new VueRouter({
+      routes: routes
+    })
+
+    const app = new Vue({
+      router: router
+
+    }).$mount('#app')
+  </script>
+
+
+
+</body>
+</html>

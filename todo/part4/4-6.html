@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <script src="vue.js"></script>
+  <script src="vue-router.js"></script>
+  <script src="vue-vuex.js"></script>
+
+  <div id="app">
+    <h1>hello world</h1>
+    <p>
+      <router-link to="/home">to home</router-link>
+      <router-link to="/bar">to bar</router-link>
+    </p>
+
+    <router-view></router-view>
+
+    <p>显示other router view</p>
+    <router-view name="other"></router-view>
+
+  </div>
+
+  <script>
+    const home = {
+      template: `<h2>home</h2>`
+    }
+
+    const bar = {
+      template: `<h2>bar{{count}} {{fullName}}</h2>`,
+      mounted() {
+        let i = 1;
+        setInterval(() => {
+          this.$store.commit('increase', i++)
+        },1000)
+      },
+      computed:  {
+        count(){
+          return this.$store.state.count;
+        },
+        fullName() {
+          return this.$store.getters.fullName;
+        }
+      }
+    }
+
+    const other = {
+      template:  `<h2>other</h2>`
+    }
+
+    const routes = [
+      {
+        path: '/home',
+        components: {
+          default: home,
+          other: other
+        }
+      },
+      {
+        path: '/bar',
+        component: bar
+      }
+
+    ]
+
+    const state = {
+      count: 0,
+      firstName: 'zhang',
+      lastName: 'xk'
+    }
+
+    const getter = {
+      fullName(state) {
+        console.log(state)
+        return `${state.firstName} ${state.lastName}`
+      }
+    }
+
+    const mutations = {
+      increase(state) {
+        state.count ++
+      }
+    }
+
+    const store = new Vuex.Store({
+      state,
+      mutations,
+      getters: getter
+    })
+
+    const router = new VueRouter({
+      routes: routes
+    })
+
+    const app = new Vue({
+      router: router,
+      store: store
+
+    }).$mount('#app')
+  </script>
+
+
+
+</body>
+</html>

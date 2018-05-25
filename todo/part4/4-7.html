@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>mutation</title>
+</head>
+<body>
+  <script src="vue.js"></script>
+  <script src="vue-router.js"></script>
+  <script src="vue-vuex.js"></script>
+  <div id="app">
+    <h1>hello world</h1>
+    <p>
+      <router-link to="/home">to home</router-link>
+      <router-link to="/bar">to bar</router-link>
+    </p>
+
+    <router-view></router-view>
+
+    <p>显示other router view</p>
+    <router-view name="other"></router-view>
+
+  </div>
+
+  <script>
+    const home = {
+      template: `<h2>home</h2>`
+    }
+
+    const bar = {
+      template: `<h2>bar{{count}}</h2>`,
+      mounted() {
+        var i = 0;
+        // setInterval(() => {
+        //   // i++;
+        //   this.$store.commit('increase', {num1:1, num2: 2})
+        // }, 1000)
+        this.$store.dispatch('updateCountAsync', {num1:2, num2: 5})
+      },
+      computed: {
+        count() {
+          return this.$store.state.count;
+        },
+
+        fullName() {
+
+        }
+      }
+    }
+
+    const other = {
+      template:  `<h2>other</h2>`
+    }
+
+    const routes = [
+      {
+        path: '/home',
+        components: {
+          default: home,
+          other: other
+        }
+      },
+      {
+        path: '/bar',
+        component: bar
+      }
+
+    ]
+
+    const state = {
+      count: 0,
+      firstName: 'zhang',
+      lastName: 'xk'
+    }
+
+
+    const mutations = {
+      increase(state, {num1, num2} ) {
+        console.log(num1, num2)
+        state.count ++ ;
+      }
+    }
+
+    const getters = {
+      fullName(state) {
+        return state.firstName + state.lastName
+      }
+    }
+
+    const actions = {
+      updateCountAsync(store, {num1, num2}){
+        setTimeout(() => {
+          store.commit('increase', num1)
+        }, 2000)
+      }
+    }
+
+    const store  = new Vuex.Store({
+      // strict: process.env.NODE_ENV === 'development'
+      strict: true,  //防止直接修改store里面的数据
+      state,
+      getters,
+      mutations,
+      actions
+    })
+
+
+    const router = new VueRouter({
+      routes: routes
+    })
+
+    const app = new Vue({
+      router: router,
+      store
+
+    }).$mount('#app')
+  </script>
+
+
+
+</body>
+</html>

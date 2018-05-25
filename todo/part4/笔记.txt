@@ -42,4 +42,174 @@ const router = new VueRouter({
 
 4-3 路由参数传递
 
+4-4 路由守卫
+
+同一个组件里面，有不同的router-view
+
+//全局导航守卫/钩子
+router.beforeEach((to, from, next) => {
+  next()  //执行next() 之后， 路由才会真正的被跳转， 不执行不会跳转到下一个路由
+  console.log('before each')
+}) // 每次路由跳转的时候触发
+
+router.beforeResolve((to, from , next) => {
+  console.log('before resolve')
+  next()
+}) //
+
+router.afterEach((to, from) => {
+  console.log('after each')
+}) // 每次导航跳转之后触发
+
+
+对数据进行校验， 比如只有登录之后才能跳转到某一个页面， 不执行next(), 页面不会跳转
+if(to, from, next) {
+  if(to.fullPath === '/app') {
+     // next()
+    // next('/login')
+    next({ path: '/login', replace: true/ false})
+  }
+}
+// 打开/app时候进入login
+replace 不往在history栈堆里面放路由记录，回退直接回退到上上步
+next() 里面可以传在路由定义时候的所有参数
+
+路由内部增加守卫/钩子
+{
+  path: '/bar',
+  component: bar,
+  beforeEnter(to, from, next) {
+    //进入路由之前调用
+    console.log('before enter')
+    next()
+  }
+}
+
+组件里面添加守卫/钩子
+
+异步组件
+
+
+4-5 vuex
+
+子组件可以拿到父组件的store
+
+mutations  修改store
+调用mutations就是用store的commit方法
+
+4-6 state getter
+
+state是一个基础的数据对象，数据实在这个基础上出来的，在声明state的过程中，即使是一些开始用不到的数据， 也应该事先声明出来
+
+getter是为了直接生成一些在应用中可以直接用的数据，在实际业务中，后端返回的数据，并不能直接满足view层使用，
+
+组件内部使用到state和getters时候
+this.$store.state.count
+this.$store.getters.fullName;
+上面的写法比较麻烦
+
+mapState mapGetters 辅助函数
+
+4-7 mutation action
+
+mutation 定义修改store的方法
+通过this.$store.commit('update', {num:1, num2: 2} ) // 进行调用
+
+mutation: {
+  update(state, {num1, num2}) {
+    state.num1 = num1;
+    state.num2 = num2;
+    //state 状态
+    //num 调用mutation时 传过来的数据
+  }
+
+}
+mutation是同步操作的， 不能存在异步操作
+调用mutation 通过
+this.$store.commit('update', 2)
+
+action和mutation一样，都是用来修改store数据的, 但是，异步操作的代码必须放在action里面写
+调用action 通过dispatch
+this.$store.dispatch('increaseAsync', 2)
+
+const actions = {
+  increaseAsync(store, num1) {
+    setTimeout(() = {
+      store.commit('update', num1)
+    }, 2000)
+  }
+}
+
+mapActions
+mapMutations
+
+4-8 模块 modules
+
+在modules下面可以声明不同的state, mutations, actions, getters, 以及给模块加一个名字，那么这个模块就有一个作用域
+
+modules: {
+  moduleA:{
+    state: {
+      msg: 'moduleA'
+    },
+    mutations: {
+      updateMsg(state, msg) {
+        // 这里面的state仅仅表示当前模块的state
+        state.msg  = state.msg + msg
+      }
+    }
+  },
+
+  moduleB: {
+    namespaced: true,
+    state: {
+      msg: 'moduleB'
+    },
+    mutations: {
+      updateMsgB(state, msg) {
+        state.msg = msg
+      }
+    }
+  }
+}
+
+获取数据
+this.$store.state.moduleA.msg
+
+因为Vuex会把所有的mutation方到全局的命名空间中，所以可以向触发全局mutation一样直接调用
+this.$store.commit('updateMsg', 10)
+
+如果想让mutation的仅仅在B模块下面，这时候需要声明namespaced: true, 这样就会仅仅在B模块下有效，对应的就是可以命名相同的mutation/action名字
+在使用的时候需要加上命名空间
+this.$store.commit('moduleB/updateMsgB', 'moduleB111')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

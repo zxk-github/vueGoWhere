@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>路由导航守卫</title>
+</head>
+<body>
+  <script src="vue.js"></script>
+  <script src="vue-router.js"></script>
+
+  <div id="app">
+    <h1>hello world</h1>
+    <p>
+      <router-link to="/home">to home</router-link>
+      <router-link to="/bar">to bar</router-link>
+    </p>
+
+    <router-view></router-view>
+
+    <p>显示other router view</p>
+    <!--<router-view name="other"></router-view>-->
+
+  </div>
+
+  <script>
+    const home = {
+      template: `<h2>home</h2>`
+    }
+
+    const bar = {
+      template: `<h2>bar</h2>`
+    }
+
+    const other = {
+      template:  `<h2>other</h2>`
+    }
+
+    const routes = [
+      {
+        path: '/home',
+        components: {
+          default: home
+        }
+      },
+      {
+        path: '/bar',
+        component: bar
+      }
+
+    ]
+
+    const router = new VueRouter({
+      routes: routes
+    })
+
+    //全局导航守卫/钩子
+    router.beforeEach((to, from, next) => {
+
+      // if(to.fullPath === '/bar') {
+      //   next()
+      // }
+      console.log('before each')
+      next()  //执行next() 之后， 路由才会真正的被跳转， 不执行不会跳转到下一个路由
+    }) // 每次路由跳转的时候触发
+
+    router.beforeResolve((to, from , next) => {
+      console.log('before resolve')
+      next()
+    }) //
+
+    router.afterEach((to, from) => {
+      console.log('after each')
+    }) // 每次导航跳转之后触发
+
+
+
+
+    const app = new Vue({
+      router: router
+
+    }).$mount('#app')
+  </script>
+
+
+
+</body>
+</html>
