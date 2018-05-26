@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Vuex模块</title>
+  <title>Vuex动态加载模块</title>
 </head>
 <body>
   <script src="vue.js"></script>
@@ -28,7 +28,7 @@
     }
 
     const bar = {
-      template: `<h2>bar{{count}} {{msgA}} {{msgB}} {{getterModuleA}} {{getterModuleB}}</h2>`,
+      template: `<h2>bar{{count}} {{msgA}} {{msgB}} {{getterModuleA}} {{getterModuleB}} {{moduleMsgC}}</h2>`,
       mounted() {
         var i = 0;
         // setInterval(() => {
@@ -50,6 +50,10 @@
         }, 7000)
       },
       computed: {
+        moduleMsgC() {
+          return this.$store.state.moduleC.msgC;
+        },
+
         count() {
           return this.$store.state.count;
         },
@@ -180,6 +184,12 @@
       }
     })
 
+    //注册一个新的模块
+    store.registerModule('moduleC', {
+      state: {
+        msgC: '3333'
+      }
+    })
 
     const router = new VueRouter({
       routes: routes

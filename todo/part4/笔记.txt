@@ -173,22 +173,73 @@ modules: {
   }
 }
 
-获取数据
-this.$store.state.moduleA.msg
+获取模块A state中数据
+msgA() {
+  return this.$store.state.moduleA.msg;
+}
+或
+...mapState({
+  msgA: (state) => state.moduleA.msg
+})
 
-因为Vuex会把所有的mutation方到全局的命名空间中，所以可以向触发全局mutation一样直接调用
+因为Vuex默认会把所有的mutation方到全局的命名空间中，所以可以向触发全局mutation一样直接调用
 this.$store.commit('updateMsg', 10)
 
 如果想让mutation的仅仅在B模块下面，这时候需要声明namespaced: true, 这样就会仅仅在B模块下有效，对应的就是可以命名相同的mutation/action名字
 在使用的时候需要加上命名空间
 this.$store.commit('moduleB/updateMsgB', 'moduleB111')
 
+getters
 
+getters: {
+  msgBGetter(state, getters, rootState) {
+    // state 当前模块的state
+    // getters 当前模块所有的getter方法
+    // rootState 全局的state
+    console.log(getters)
+    console.log(rootState)
 
+    return state.msg + 2;
+  }
+},
 
+this.$store.getters['moduleB/msgBGetter']
 
+...mapGetters({
+  msgB: 'moduleB/msgBGetter'
+})
 
+store.registerModule('moduleC', {
+  state: {
+    msg : 'aaa'
+  }
+})
 
+store.watch((state) => state.count + 1, (newCount) => {
+  console.log(newCount)
+})
+
+4-9
+
+定义一个方法是对数据进行处理，第二个方法是当返回的数据有变化的时候，才会调用
+
+任何mutation调用的时候，都会监听到
+store.subscribe((mutation, state) => {
+  console.log(mutation.type)  //调用的是哪一个mutation
+  console.log(mutation.payload) //mutation接收到的参数
+})
+
+store.subscribeAction((action, state) => {
+  console.log(action.type) // 调用哪个mutation
+  console.log(action.payload)  // action参数
+})
+
+定义插件 初始化的时候就执行了
+plugins: [
+  (store) => {
+    console.log('初始化的时候就执行了')
+  }
+]
 
 
 
