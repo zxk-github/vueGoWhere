@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <ul>
+      <li v-for="(item, index) in msg" :key="item.id">
+        {{item.a}}
+      </li>
+    </ul>
+    <button @click="change">click</button>
+  </div>
+
+  <script>
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        msg: [
+          {id: 1, a: 1},
+          {id: 2, a: 2},
+          {id: 3, a: 3}
+        ]
+      },
+      methods: {
+        change() {
+          this.
+        }
+      }
+
+    })
+
+  </script>
+</body>
+</html>

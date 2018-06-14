@@ -13,7 +13,7 @@
   <!--</script>-->
   <script>
     var app = new Vue({  //创建一个VUE实例
-      el: '#app',  //当前vue实例接管的id=app这个标签里的区域，当前vue实例处理的范围
+      el: '#app',  //当前vue实例接管的DOM id=app这个标签里的区域的多有内容，当前vue实例处理的范围
       data: {   // 定数据
         content: 'hello word 1'
       }
@@ -21,9 +21,12 @@
 
     setTimeout(function(){
       app.$data.content = 'bye word' ;
-      //$data可以理解位data的别名
+      //$data可以理解为data的别名
     }, 2000)
 
+// el Vue实例负责管理的区域
+
+// data定义了数据， el定义了vue实例接管的DOM的范围
   </script>
 </body>
 </html>
