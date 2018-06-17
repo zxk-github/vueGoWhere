@@ -1,4 +1,4 @@
-# traval
+# travel
 
 > A Vue.js project
 

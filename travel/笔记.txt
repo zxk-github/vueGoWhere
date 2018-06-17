@@ -1,0 +1,75 @@
+index.html 项目首页的模板文件
+static 静态资源
+src 项目源代码
+main.js项目的入口文件
+app.vue 项目根组件
+componets 放项目中使用的组件
+
+build wepack配置
+
+6-3 
+vue 单文件组件和路由
+当一个文件以.vue结尾的时候，把这个文件叫做单文件组件，放置的是一个vue的组件
+<template>
+  // 组件的模板
+</template>
+
+<script>
+  // 组件的逻辑
+</script>
+
+<style>
+  // 组件的样式
+</style>
+
+路由
+根据网址的不同，返回不同的内容给用户
+
+<router-view/>  显示的是当前路由地址对应的内容
+
+Vue.use(Router)
+
+let router = new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'HelloWord'
+      component: HelloWord
+    }
+  ]
+
+})
+
+new Vue({
+  el: '#app',
+  router,  //注入路由
+  components: { App },
+  template: '<App/>'
+})
+
+当用户访问根路径的时候，在routes中，根路由对应的是HelloWord组件，在App.vue中，<router-view> 展示的是当前路由所对应的组件
+
+访问 
+<router-link to="/list"></router-link>
+
+6-4 单页面应用和多页面应用
+
+多页面应用：
+  首屏时间块，SEO好
+  缺点：每次都需要发送请求，页面切换慢
+单页应用
+  js可以感知页面的变化，js可以把当前页面的内容清除掉，下个页面挂载进来，这时候路由由前端来做
+  页面进行渲染的时候，不需要进行html请求
+  首页渲染慢，SEO差
+
+6-5 
+移动端1像素边框
+手机上的分辨率比较高，有可能是一倍屏，或者二倍屏，这时候写border:1px,这时候1px是css像素，这时候在二倍屏上看，这时候对应的不是一个物理像素的宽度， 有可能是两个，三个， 为了解决这种1像素被显示成多像素的问题，需要引入1像素边框解决方案，本质上就是通过tansform: scale这种放大缩小的方式，来实现1px物理像素的解决办法
+
+300毫秒延迟问题，在一些移动端机型上，当点击click事件，click会延迟300毫秒之后才会执行
+引入fastclick
+
+npm install fastclick --save
+
+import fastclick from 'fastclick'
+fastclick.attach(document.body)
