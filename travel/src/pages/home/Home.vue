@@ -1,13 +1,18 @@
 <template>
   <div>
-    hello word
+    <home-header></home-header>
   </div>
   
 </template>
 
 <script>
+  import HomeHeader from './components/header'
+
   export default {
-    name: 'Home'  // 定义组件名字
+    name: 'Home',  // 定义组件名字
+    components: {
+      HomeHeader
+    },
   }
 </script>
 

@@ -73,3 +73,27 @@ npm install fastclick --save
 
 import fastclick from 'fastclick'
 fastclick.attach(document.body)
+
+7-1 使用stylus
+
+npm install stylus stylus-loader -save
+
+页面组件化，希望可以把页面拆分成一个个的小组件
+
+移动端布局一般采用rem的布局方式，设置html{font-size: 50px}, rem是相对于根html的字体大小， 1rem是50px; 设计师给的是一个相对于手机物理像素二倍尺寸的图片(750px)，这时候86px的高度，实际上在手机上应该为43px，43px就是43/50rem，上下乘二，就是0.86rem，这就是设置成50px原因
+
+7-2 在其他文件中引入别的css
+@import '~@/assets/styles/varibles.styl'
+
+webpack.base.conf.js
+resolve: {
+  alias: {
+      'vue$': 'vue/dist/vue.esm.js',
+      '@': resolve('src'),
+      'styles': resolve('src/assets/styles')
+    }
+}
+
+使用iconfont 
+使用stylus定义变量
+使用alias进行优化
