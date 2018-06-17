@@ -97,3 +97,45 @@ resolve: {
 使用iconfont 
 使用stylus定义变量
 使用alias进行优化
+
+<style lang="stylus" scoped>
+
+</style>
+scoped 只会对当前组件有影响，不会影响其他组件，不管是不是子组件
+
+
+7-3 
+安装轮波图插件
+1. vue-awesome-swiper
+cnpm install vue-awesome-swiper@2.6.7 --save
+
+
+
+2. 解决图片未加载时，下面内容上移，加载完成之后，屏幕抖动问题
+
+<div>
+  <div class="wrapper">
+    <img /> 
+  </div>
+  <div>文字区域<div>
+</div>
+
+写法1
+.wrapper{
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  padding-bottom: 32.25% // 图片的高宽比，高度会想对于宽度自动撑开宽的32.25%， 这就实现了高宽比32.23%
+}
+
+写法2
+.wrapper{
+  width: 100%
+  height: 31.25vw  (31.25 viewport宽度)
+}
+
+在当前组件中修改其他组件中的样式
+.wrapper >>> .swiper-pagenation-bullet-active{
+  background: red;
+}
+>>>  指的是样式进行一个穿透，只要.wrapper下面的子组件里面，只要出现.swiper-pagenation-bullet-active，都设置成红色
