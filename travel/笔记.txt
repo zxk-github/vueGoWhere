@@ -139,3 +139,36 @@ cnpm install vue-awesome-swiper@2.6.7 --save
   background: red;
 }
 >>>  指的是样式进行一个穿透，只要.wrapper下面的子组件里面，只要出现.swiper-pagenation-bullet-active，都设置成红色
+
+7-6 采用flex布局的页面，当使用省虐号的时候，不会出现，这时候flex: 1的元素上加上min-width: 0; 就会出现
+
+7-7 组件的一部分内容需要被父组件定制的时候，可以使用slot
+
+7-8 每个子组件都发送ajax，性能是很低的，所以应该在Home.vue中发送一个ajax，然后通过父子组件通信的方式，把数据传入子组件
+
+vue中发送ajax请求可以使用 
+1. 浏览器自带的fatch
+2. vue-resource
+3. axios 可以实现跨平台的数据请求浏览器上可以发送XHR请求， node服务器上可以发送http请求
+npm install --save axios
+
+static 目录存放的是静态文件，在整个项目目录中只有static目录下的文件能被访问到
+http://localhost:8080/#/static/mock/index.json 
+可以直接访问到文件
+
+比如说 
+/api/index.json 对应本地的/static/mock/index.json 
+这时候就要使用请求代理
+
+修改config/index.js文件
+proxyTable: {
+  '/api':{
+    target: 'http://localhost:8080',
+    pathRewrite: {
+      '^/api': '/static/mock'
+    }
+  }
+}
+
+7-8 首页父子组件数据传递
+
