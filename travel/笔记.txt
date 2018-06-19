@@ -170,5 +170,97 @@ proxyTable: {
   }
 }
 
-7-8 首页父子组件数据传递
+7-9 使用父子组件数据传递
 
+8-1
+
+8-4 
+1. better-scroll
+npm install better-scroll --save
+
+8-6 兄弟组件之间传值问题
+
+子 --> 父 --> 子
+
+使用循环创建的ref, 获取的时候,获取到的是一个数组
+<div v-for="item of list" :ref="item">{{item}}</div>
+
+this.$refs['a'] //得到的是一个数组
+this.$refs['a'][0] 是DOM元素
+
+@click
+@touchstart
+@touchmove
+@touchend
+
+const startY = this.$refs['A'][0].offsetTop   // 到父级的高度
+const touchY = e.touches[0].clientY // 手指到屏幕顶端的高度
+
+页面数据发生变化,同时页面重新渲染之后,执行updated钩子
+
+性能优化: 
+不频繁获取top 
+使用定时器截流
+
+8-9 使用vuex实现数据共享
+ 
+在开发大型项目的时候,vue执行承担视图层的内容,当涉及到大量数据传递的时候,需要引入vuex进行数据辅助
+vuex是虚线部分的内容,当项目中多个页面之间进行复杂的数据传递的时候,当我们把数据放到一个公共的部分进行存储,当某一个组件改变了这个数据区域之后,其他组件都能感知到,vuex的设计就是这样的思想,vuex就是一个公共数据存储的区域,这个区域可以理解为一个仓库,仓库是由很多区域组成的
+state: 所有数据都存放在state之中, 如果组件想使用数据, 直接调用state就可以了
+改变数据:
+如果有一些异步操作,或者大量批量的同步操作,我们可以使用actions, 组件调用actions,然后actions调用mutations,mutations里面放置的是一个个对state同步的修改, 只有通过mutations才能改变公共数据的值,有的时候我们也可以略过actions,让组件直接调用mutations
+当组件调用actions的时候,组件通过dispatch方法来操作actions,然后actions操作mutaions或者组件操作mutaions,都是通过调用commit方法来操作
+
+单向数据的改变流程
+
+this.$store  //获取到创建的store
+this.$store.state // 获取store的state
+this.$store.state.city
+
+
+this.$router.push('/') 路由跳转
+
+8-10 
+import { mapState, mapMutations } from 'vuex'
+
+// mapState指,把vuex中的数据,state中的city属性映射到页面中computed计算属性中的city里
+页面中使用{{this.city}}
+页面中使用{{currentCity}}
+computed: {
+  ...mapState(['city]) 或者
+  ...mapState({
+    currentCity: 'city'
+  })
+}
+
+mapMutations
+methods: {
+  handleClick(city) {
+    this.changeCity(city)
+  },
+  ...mapMutations(['changeCity'])
+}
+一个mutation叫changeCity, 映射到组件中名字叫changeCity的方法中,这时候使用mutaion直接this.changeCity就可以
+
+getters: 在vuex中getters的作用有点类似computed的作用,需要通过state中的数据计算出新的数据的时候,这时候就可以使用getters提供一些新的数据, 这样就可以避免数据的重复
+
+
+export default new vuex.Store({
+  state: '北京',
+  getters: {
+    doubleCity(state) {
+      return state.city + state.city
+    }
+  }
+})
+
+computed: {
+  ...mapGetter(['city2'])
+}
+
+module
+在非常复杂的业务场景中,需要有很多的公共数据在vuex中进行数据存储,如果把所有的mutations都放法到mutations里,这个文件会变的非常庞大,这时候就可以借助module,对复杂的mutations,actions,state进行拆分
+
+modules: {
+  a: moduleA
+}

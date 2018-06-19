@@ -2,15 +2,17 @@
   <div class="icons"> 
     <swiper :options="swiperOption">
       <swiper-slide v-for="(page, index) of pages" :key="index">
-        <div class="icon-item" v-for="item of page" :key="item.id">
+        <div class="icon-item" v-for="item of page" :key="item.id"
+        @click="handleCityClick(item.title)"
+        >
           <div class="icon-img">
             {{item.title}}
           </div>
         </div>
       </swiper-slide>
       <swiper-slide>
-        <div class="icon-item">
-        <div class="icon-img">
+        <div class="icon-item" @click="handleCityClick2('1')">
+        <div class="icon-img" >
             景点2
           </div>
         </div>
@@ -68,6 +70,19 @@ export default {
         }
 
       ]
+    }
+  },
+  methods: {
+    handleCityClick(city) {
+      // 派发一个名字叫做changeCity的action,这时候需要在store中声明一个名字为changeCity的action
+      this.$store.dispatch('changeCityAction', city)
+
+      
+    },
+    handleCityClick2 (city) {
+      // 通过commit直接调用mutation
+      console.log(city)
+      this.$store.commit("changeCityMutation", city)
     }
   },
   computed: {

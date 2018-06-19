@@ -7,16 +7,30 @@
       <i class="iconfont">&#xe632;</i>  
       <span>搜索</span>
     </div>
-    <div class="header-right">
-      <span>城市</span>
-      <i class="iconfont">&#xe64a;</i>
-    </div>
+    <router-link to="city">
+      <div class="header-right">
+        <span>{{currentCity}}</span>
+        <i class="iconfont">&#xe64a;</i>
+      </div>
+    </router-link>
+   
   </div>
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   export default {
-    name: 'HomeHeader'
+    name: 'HomeHeader',
+    // computed: {
+    //   city () {
+    //     return this.$store.state.city
+    //   }
+    // }
+    computed: {
+      ...mapState({
+        currentCity: 'city'
+      })
+    }
   }
 </script>
 
