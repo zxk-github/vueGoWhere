@@ -264,3 +264,32 @@ module
 modules: {
   a: moduleA
 }
+
+
+keep-alive进行性能优化
+
+每次路由切换的时候,ajax都发送了一次,
+
+<keep-alive>
+  <router-view></router-view>
+</keep-alive>
+// 路由内容加载一次之后,就把路由的内容放到页面之中,下次再次进入路由之后,不需要重新渲染这个组件,只需要从内存中取出就可以了
+
+因为这时候缓存了页面,当路由发生变化的时候,页面不会请求ajax
+当使用keep-alive之后,组件中会多出来一个生命周期函数actived, 每次返回页面之后,activatied会执行
+activated: 每次页面在显示的时候,都会执行
+这个时候,就可以通过页面判断页面现在数据和之前数据是不是一样,判断是否加载ajax
+
+deactivated: 当页面即将被隐藏的时候,将会执行
+
+9-1
+
+<router-link tag="li" :to="'/detail/'+item.id"></router-link>
+
+{
+  path: '/detail/:id',
+  name: 'Detail',
+  component: Detail
+}
+
+

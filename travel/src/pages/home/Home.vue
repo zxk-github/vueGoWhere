@@ -3,6 +3,7 @@
     <home-header></home-header>
     <home-swiper></home-swiper>
     <home-icons></home-icons>
+    <global-input @inputEmit="getInput" :val="msg"></global-input>
   </div>
   
 </template>
@@ -20,6 +21,11 @@
       HomeSwiper,
       HomeIcons
     },
+    data() {
+      return {
+        msg : '22'
+      }
+    },
     mounted() {
       this.getHomeInfo()
     },
@@ -30,6 +36,9 @@
       },
       getHomeInfoSucc(res) {
         console.log(res)
+      },
+      getInput(a){
+        console.log(a)
       }
     }
   }

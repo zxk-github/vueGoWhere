@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <script src="vue.js"></script>
+  <script src="vue-router.js"></script>
+
+  <div id="app">
+    <h1>hello word</h1>
+    <div>
+      <router-link to="/bar/aaa">to bar</router-link>
+      <router-link to="/foo">to foo</router-link>
+    </div>
+    <router-view></router-view>
+  </div>
+
+  <script>
+    var Bar = {
+      template: '<p>this is bar{{$route.params.id}}</p>'
+    }
+
+    var Foo = {
+      template: '<p>this is foo</p>'
+    }
+
+    var routes = [
+      {path: '/bar/:id', component: Bar},
+      {path: '/foo', component: Foo}
+    ]
+
+    var router = new VueRouter({
+      routes
+    })
+
+    var vm = new Vue({
+      el: '#app',
+      router
+    })
+  </script>
+
+
+
+</body>
+</html>

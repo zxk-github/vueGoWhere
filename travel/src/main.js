@@ -10,11 +10,13 @@ import 'styles/border.css'
 import 'styles/iconfont.css'
 import 'swiper/dist/css/swiper.css'
 import store from './store'
+import GlobalInput from './components/GlobalInput';
 
 fastclick.attach(document.body)
 Vue.config.productionTip = false
 Vue.use(VueAwesomeSwiper)
 
+Vue.component('global-input', GlobalInput);
 
 /* eslint-disable no-new */
 new Vue({
