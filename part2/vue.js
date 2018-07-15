@@ -10823,6 +10823,7 @@ var createCompiler = createCompilerCreator(function baseCompile (
     optimize(ast, options);
   }
   var code = generate(ast, options);
+  console.log(code.render)
   return {
     ast: ast,
     render: code.render,
