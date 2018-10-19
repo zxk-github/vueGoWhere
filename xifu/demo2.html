@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>选项卡</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+     <div id="app">
+        <div>
+            <span v-for="(title, index) of titles" @click="handle(index)" > <span @click.stop="childHandle">{{title}}</span>
+        </div>
+        <ul>
+            <li v-for="(content, index) of contents" v-if="index === iNowIndex">{{content}}</li>
+        </ul>
+     </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                titles: [
+                    'title1',
+                    'title2',
+                    'title3',
+                ],
+                contents: [
+                    'title1 content',
+                    'title2 content',
+                    'title3 content'
+                ],
+                iNowIndex: 0
+
+            },
+            methods: {
+                handle(index){
+                    // this.iNowIndex = index;
+                    alert(2);
+                },
+                childHandle(){
+                    alert(11);
+                }
+            }
+        })
+    </script>
+</body>
+</html>

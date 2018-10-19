@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+     <div id="app">
+         <p>{{msg}}</p>
+        <p>{{total}}</p>
+        <p>{{methodsTotal()}}</p>
+        <p>{{watchTotal}}</p>
+        <p>{{count1}}</p>
+     </div>
+    <script>
+        
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                count1: 1,
+                count2: 2,
+                msg: 'hello',
+                watchTotal: 0,
+                obj: {
+                    a: 1
+                }
+            },
+            methods: {
+                
+            },
+            computed: {
+                // 'total': function() {
+                //     console.log('computed执行了');
+                //     var total = this.count1 + this.count2;
+                //     return total;
+                // }
+                total: {
+                    get: function() {
+                        console.log('gethgetget')
+                        return this.count1 + this.count2;
+                    },
+                    set: function( value) {
+                        
+                        this.count1 = value - this.count2;
+                    }
+                }
+            },
+            methods: {
+                methodsTotal: function() {
+                    console.log('methods里面的total')
+                    var total = this.count1 + this.count2;
+                    return total ;
+                }
+            },
+            watch: {
+                count1: function(value, oldValue) {
+                    console.log(value, oldValue);
+                    console.log('watch里面的total')
+                    this.watchTotal = value + this.count2;
+                },
+                count2: function(value, oldValue) {
+                    console.log(value, oldValue);
+                    console.log('watch里面的total')
+                    this.watchTotal = this.count1 + value;
+                },
+                obj: function(value, oldValue) {
+                    console.log(11111);
+                },
+                'obj.a': function(value, oldValue) {
+                    console.log(value);
+                }
+            }
+        })
+    </script>
+</body>
+</html>

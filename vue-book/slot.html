@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <com-test>
+            <p slot="part1">我就是内容1</p>
+            <p>我就是内容2</p>
+            <p slot="part4">我就是内容4</p>
+            <p>我就是内容3</p>
+            <template slot-scope="props">
+                <p>作用域slot {{props.msg}}</p>
+            </template>
+        </com-test>
+    </div>
+    <script>
+        //  使用slot分发内容，当需要让组件组合使用，混合父组件的内容与子组件的模版时，就会用到slot，这个过程叫内容分发
+        
+        Vue.component('com-test', {
+            template: `
+                <div>
+                    <div>
+                        <slot name="part1"></slot>
+                    </div>
+                    <div>这是子组件</div> 
+                    <slot msg="scope">
+                        如果子组件标签中没有插入内容，我就显示
+                    </slot>   
+                    <div>这是子组件</div>
+                    <slot>
+                        如果子组件标签中没有插入内容，我就显示
+                    </slot> 
+                    <div>这是子组件</div>
+                </div>
+            `,
+            mounted() {
+                console.log(this.$slots)
+            },
+        })
+
+        var vm = new Vue({
+            el: '#app'
+        })
+    </script>
+</body>
+</html>

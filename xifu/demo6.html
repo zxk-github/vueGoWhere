@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+     <div id="app">
+        <input v-model.trim="msg" type="text" />
+        <p>{{msg}}</p>
+        <div>{{msg}}</div>
+        <p>{{total}}</p>
+        <button @click="show">click</button>
+
+        <div>
+            <input type="checkbox" v-model.number="checkboxValue"/> {{checkboxValue}}
+        </div>
+        <div>
+            <input type="checkbox" value="12" v-model="checkboxArrValue"/>
+            <input type="checkbox" value="23" v-model="checkboxArrValue"/>
+            <input type="checkbox" value="34" v-model="checkboxArrValue"/>
+            {{checkboxArrValue}}
+        </div>
+        <div>
+            <input type="radio" value="123" v-model="radioValue"/>
+            <input type="radio" value="111" v-model="radioValue"/>
+            <input type="radio" value="222" v-model="radioValue"/>
+            <input type="radio" value="1333" v-model="radioValue"/> {{radioValue}}
+        </div>
+        <div>
+            <select v-model="selectValue">
+                <option selected>12</option>
+                <option>23</option>
+                <option>34</option>
+            </select>
+            {{selectValue}}
+            <div></div>
+            <select v-model="selectHasValue">
+                <option value="a">12</option>
+                <option>23</option>
+                <option value="c">34</option>
+            </select>
+            {{selectHasValue}}
+        </div>
+     </div>
+    <script>
+        
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '',
+                checkboxValue: false,
+                checkboxArrValue: [],
+                radioValue: '',
+                selectValue: '',
+                selectHasValue: ''
+            },
+            methods: {
+                show() {
+                    console.log(this.msg);
+                    console.log(this.checkboxArrValue)
+                }
+            },
+            computed: {
+                total() {
+                    return this.msg+111;
+                }
+            }
+        })
+    </script>
+</body>
+</html>

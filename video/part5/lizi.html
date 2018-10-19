@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        li{
+            margin-bottom: 20px;
+        }
+    </style>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <ul>
+            <li v-for="(item, index) of list">
+                <div>
+                    这是图片的用法
+                    <img :src="item.imgSrc" />
+                </div>
+                <div>
+                    这是平时标题
+                    <span>{{item.name}}</span>
+                </div>
+                <div v-if="item.isShow">
+                    这个东西需不需要显示出来
+                </div>
+            </li>
+        </ul>
+    </div>  
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                list: [
+                    {
+                        name: 'title1',
+                        imgSrc: 'https://upload.jianshu.io/users/upload_avatars/2020768/e6c1b3ad30ce.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96',
+                        isShow: true
+                    },
+                    {
+                        name: 'title1',
+                        imgSrc: 'https://upload.jianshu.io/users/upload_avatars/2020768/e6c1b3ad30ce.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/96/h/96',
+                        isShow: false
+                    }
+                ]
+            }
+        })
+    </script>
+</body>
+</html>

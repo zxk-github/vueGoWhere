@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //对象
+        var obj = {
+            name: 'zhang',
+            getName: function() {
+
+            }
+        }  
+        
+        var name = 'zhang';
+        var obj = {
+            name: name,
+            getName() {
+                
+            }
+        }
+        var obj = {
+            name,
+            getName() {
+
+            }
+        }
+
+        function fn() {
+            return 11
+        }
+        
+        var fn = function() {
+            // sdfsd
+
+        }
+
+        var fn = () => {
+            //sadfs
+            
+        }
+
+        var a = 'song'
+        var obj = {
+            a: 'zhang',
+            fn: function() {
+                // this 代表obj
+                console.log(this.a);
+                var _this = this;
+                setTimeout(function() {
+                    // this代表window
+                    console.log(_this.a);
+                    console.log(this.a);
+                },10)
+            }
+        }
+        obj.fn()
+
+        var obj = {
+            a: 'zhang',
+            fn() {
+
+                setTimeout(() => {
+                    console.log(this.a);
+                    // 箭头函数内部的this在创建的时候就已经确定了，和函数外的this是一样的
+                },10)
+            }
+        }
+        obj.fn()
+    </script>
+</body>
+</html>

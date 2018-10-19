@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="box">{{time}} {{getTime()}}
+
+
+        <input type="checkbox" v-model="pink" :true-value="123" :false-value="345" />{{pink}}
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#box',
+            data: {
+                pink: false
+            },
+            computed: {
+                time() {
+                    return new Date()
+                }
+            },
+            methods: {
+                getTime() {
+                    return new Date()
+                }
+            }
+        })
+    </script>
+</body>
+</html>

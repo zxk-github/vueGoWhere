@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p>{{total}}</p>
+        <my-test v-model="total"></my-test>
+    </div>
+    <script>
+        Vue.component('myTest', {
+            template: `<div @click="addOne">+1</div>`,
+            data() {
+                return {
+                    count: 0
+                }
+            },
+            methods: {
+                addOne() {
+                    this.count ++;
+                    this.$emit('input', this.count);
+                }
+            }
+            
+        })
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                total: 0
+            }
+        })
+    </script>
+</body>
+</html>

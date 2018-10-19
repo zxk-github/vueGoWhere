@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+    <style>
+        .box{
+            display: flex;
+        }
+        img{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+        .input-area{
+            width: 500px;
+        }
+        .button-area{
+            height: 80px;
+            width: 500px;
+            align-self: center;
+        }
+        .show-input{    
+            border: 1px solid #ccc;
+            outline: none;
+            background: none;
+            height: 80px;
+            width: 100%;
+            line-height: 80px;
+            border-radius: 4px;
+            text-align: left;
+            align-self: center;
+        }   
+        .input{
+            margin-top: 10px;
+            height: 200px;
+            width: 500px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .input textarea{
+            border: none;
+            height: 150px;
+            outline: none;
+            width: 100%;
+        }
+        .submit{
+            text-align: right;
+            width: 100%;
+        }
+        .submit-btn{
+            height: 50px;
+            width: 100px;
+            background: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="box">
+            <img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=1137105813,2293612706&fm=173&app=25&f=JPEG?w=218&h=146&s=9BBDD1A28062A6EC5C79E52D03008043" />
+            <div class="button-area" @click="showTextarea" v-if="!isShowTextarea">
+                <button class="show-input">write a commit</button>
+            </div>    
+            <div class="input" v-if="isShowTextarea">
+                <textarea v-model="textAreaContent"></textarea>
+                <div class="submit">
+                    <button class="submit-btn" @click="submit">submit</button>
+                </div>
+                
+            </div>
+        </div>
+        <ul>
+            <li v-for="content of contentList">{{content.content}}</li>
+        </ul>
+    </div>
+    <script>
+        
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                isShowTextarea: false,
+                contentList: [
+                    {content: '123213213'},
+                    {content: 'aaaa'},
+                    {content: 'cccc'}
+                ],
+                textAreaContent: ''
+            },
+            methods: {
+                showTextarea() {
+                    this.isShowTextarea = true;
+                },
+                submit() {
+                    this.contentList.unshift({content: this.textAreaContent})
+                    this.textAreaContent = '';
+                    this.isShowTextarea = false;
+                }
+            }
+        })
+    </script>
+</body>
+</html>

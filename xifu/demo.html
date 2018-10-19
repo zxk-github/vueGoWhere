@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div>{{msg}}</div>
+     <div id="app">
+         <div>{{msg}}</div>
+        <div v-if="studyIf">{{studyIf}}if显示出来了<p>sdafsd</p></div>
+        <div v-else>{{studyIf}}if否显示出来了</div>
+        <div v-if="type === 'A'">
+        A
+        </div>
+        <div v-else-if="type === 'B'">
+        B
+        </div>
+        <div v-else-if="type === 'C'">
+        C
+        </div>
+        <div v-show="studyShow">show是否显示出来了</div>
+        <div v-html="html"></div>
+     </div>
+    <script>
+        
+        var vm = new Vue({
+            data: {
+                msg: 'helloword',
+                html: '<h1>123</h1>',
+                studyIf: true,
+                studyShow: true,
+                type: "B"
+            },
+            methods: {
+                add() {
+                    this.msg += 1 ;
+                },
+                msg2: function() {
+                    this.msg = this.changeData(this.msg);
+                    // return 123;
+                    // console.log(data)
+                },
+                changeData(data){
+                    
+                    return data+ 1;
+                }
+            }
+        })
+        vm.$mount('#app')
+        console.log(vm.msg);
+        console.log(vm.$data.msg);
+        vm.$data.msg = 'aaa';
+        console.log(vm.msg2());
+    </script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+单一状态树
+vuex是一个单一状态树，用一个对象就包含了应用的全部状态，至此他便作为一个唯一数据源存在，这也意味着每个应用将仅仅包含一个store实例
+单一状态树能让我们直接定位任一特定的状态片段，在调试的时候也能轻易取得整个应用的状态快照
+
+在vue组件中获得vuex状态
+由于vuex的存储是响应式的，从store实例中读取状态最简单的方法就是在计算属性中返回某个状态
+computed: {
+    count() {
+        return store.state.count
+    }
+}
+每当store.state.count变化的时候，都会重新求取计算属性，并且触发相关的DOM更新
+然而，这种模式导致组件依赖全局状态单例。在模块化的构建系统中，在每个需要使用 state 的组件中需要频繁地导入，并且在测试组件时需要模拟状态。
+
+vuex通过store选项，提供了一种机制将状态从根组件注入到每一个子组件中(需要调用Vue.use(Vuex))
+
+Vue.use(Vuex)
+var store = new Vuex.Store({
+
+})
+
+new Vue{
+    store
+}
+
+在根组件中注册store选项，该store实例会注入根组件下的所有组件中，且自组件能通过this.$store访问到
+
+computed: {
+    count() {
+        return this.$store.state.count
+    }
+}
+
+mapState 辅助函数
+当一个组件需要获取多个状态参数时候，将这些状态声明为计算属性会有些重复和冗余，为了解决这个问题，我们可以使用mapState辅助函数帮助我们生成计算属性
+
+import { mapState } from 'vuex';
+
+computed: mapState({
+    count: state => state.count,
+
+    // 传字符串参数'count'等同于 state => state.count
+    countAlias: 'count',
+
+    // 为了能够使用this获取局部状态，必须使用常规函数
+    countPlusLocalState (state) {
+        return state.count + this.localCount
+    }
+})
+
+当映射的计算属性的名称和state的子节点名称相同时，我们可以给mapState传一个字符串数组
+computed: mapState({
+    // 映射this.count 为store.state.count
+    'count'
+})
+
+对象展来运算符
+将mapState和局部计算属性混合使用
+computed: {
+    localComputed() {
+
+    },
+    ...mapState({
+        count: state => state.count
+    })
+}
+使用Vuex并不意味着你需要将所有的状态都放入vuex中，虽然将所有的状态放到vuex会使状态变化更显式和易调试，但也不直观
+如果有些状态严格属于单个组件，最好还是作为组件的局部状态
+
+getter
+有时候我们需要从store的state中派生出来一些状态，例如对列表进行过滤并计数
+computed: {
+    doneToDoCount() {
+        return this.$store.state.todos.filter(todo => todo.done).length;
+    }
+}
+如果有多个组件需要用到此属性，我们要么复制这个函数，或者抽取成一个公共的，并在多处引入
+
+Vuex允许我们在store中定义getter(可以认为是store的计算属性)。就像计算属性一样，getter的返回值会根据他的依赖被缓存起来，且只有当他的依赖值发生变化的时候才会被重新计算
+
+const store = new Vuex.Store({
+    state: {
+        todos: [
+            { id: 1, text: '...', done: true },
+            { id: 2, text: '...', done: false },
+        ]
+    },
+    getters: {
+        doneTodos(state) { 
+            return state.todos.filter(todo => todo.done)
+        }
+    }
+})
+
+1. 通过属性访问
+store.getters.doneTodos  
+
+2. 在getters中使用getters
+getters: {
+    doneTodoCount(state, getters) {
+        return getters.doneTodos.length;
+    }
+}
+store.getters.doneTodoCount
+
+3. 组件中使用
+computed: {
+    doneTodoCount() {
+        return this.$store.getters.doneTodoCount;
+    }
+}
+
+通过属性的形式访问时是作为vue的响应式系统的一部分缓存其中的
+
+通过方法访问
+
+你也可以通过getter返回一个函数，来实现getter传参，在你对store里的数组进行查询的时候，非常有用
+getters: {
+    getTodoById: (state) => (id) => {
+        return state.todos.find(todo => todo.id === id)
+    }
+}
+调用
+store.getters.getTodoById(2);
+
+mapGetters 辅助函数
+mapGetters辅助函数仅仅是将store中的getter映射到局部计算属性
+
+import { mapGetters } from 'Vuex';
+computed: {
+    ...mapGetters([
+        'doneTodosCount',
+        ....
+    ])
+}
+
+如果想将一个getter属性取另外一个名字，使用对象形式
+mapGetters({
+    // 把this.doneCount 映射为 this.$store.getters.doneTodosCount
+    doneCount: 'doneTodoCount'
+})
+
+mutation
+
+更改vuex的store中的状态的唯一方法是提交mutation
+vuex中的mutaion非常类似于事件，每个mutation 都有一个字符串的事件类型(type)和一个回调函数(handle),这个回调函数就是我们实际进行状态更改的地方，并且它会接受state作为第一个参数
+const store = new Vuex.Store({
+    state: {
+        count: 1
+    },
+    mutations: {
+        increment(state) {
+            // 变更状态
+            state.count ++
+        }
+    }
+})
+你不能直接调用一个mutation handler, 这个选项更像是事件注册：当触发一个类型为increment的mutation时，调用此函数
+要唤醒一个mutation handler, 你需要以相应的type调用store.commit方法
+store.commit('increment')
+
+提交载荷(payload)
+你可以向store.commit传入额外的参数，即mutation的载荷
+mutations: {
+    increment(state, n) {
+        state.count += n;
+    }
+}
+
+store.commit('increment', 10)
+
+大多数情况下，载荷应该是一个对象，这样可以包含多个字段并且记录的mutation会更易读
+mutations: {
+    increament(store, payload) {
+        state.count += payload.amount
+    }
+}
+store.commit('increament', {
+    mount: 10
+})
+
+对象风格的提交方式
+提交mutation的另一种方式时直接使用包含type属性的对象
+store.commit({
+    type: 'increment',
+    amount: 10
+})
+当使用对象风格的提交方式，整个对象都作为载荷传给 mutation 函数，因此 handler 保持不变：
+
+mutation需要遵循vue的响应规则
+既然vuex的store的状态是响应式的，那么当我们变更状态时，监视状态的vue组件也会自动更新
+着意味着vuex中的mutation也需要与使用vue一样遵循一些规则
+最好提前在你的store中初始化好所有的所需属性
+当需要在对象上添加属性的时候 Vue.set(obj, 'newProp', 123)
+或者使用新对象替换老得对象state.obj = { ...state.obj, newProp: 123 }
+
+mutation必须时同步函数
+
+
+在组件中使用mutation
+this.$store.commit('...')
+
+或者使用mapMutations辅助函数将组件中的methods映射为store.commit调用
+import { mapMutations } from 'vuex'
+
+methods: {
+    ...mapMutations([
+        'increament'  // 将this.increament() 映射为 this.$store.commit('increment'),
+
+        'increamentBy' // 将this.increamentBy(mount) 映射为 this.$store.commit('increamentBy', mount);
+    ]),
+    ...mapMutations({
+        add: 'increament' // 将this.add() 映射为 this.$store.commit('increament')
+    })
+}
+
+action 类似mutation 
+但是
+action 提交的是 mutation, 而不是直接变更状态
+action 可以包含任意异步操作
+
+const store = new Vuex.Store({
+    state: {
+        count: 0
+    },
+    mutations: {
+        increament(state) {
+            state.count ++
+        }
+    },
+    actions: {
+        increament(context) {
+            context.commit('increament');
+        }
+    }
+})
+
+action函数接受一个与store实例具有相同方法的属性和context对象。因此你可以调用context.commit提交一个mutation， 或者通过context.state和context.getter来获取state和getters, 
+
+使用结构赋值简化代码
+actions: {
+    increment({commit}) {
+        commit('increament')
+    }
+}
+
+分发action
+action是通过dispatch方法触发
+store.dispatch('increament');
+
+actions: {
+    incrementAsync({commit}) {
+        setTimeout(() => {
+            commit('increament')
+        }, 100)
+    }
+}
+
+actions 支持同样的载荷方式和对象方式进行分发
+
+store.dispatch('incrementAsync', {
+    mount: 10
+})
+
+store.dispatch({
+    type: 'incrementAsync',
+    mount: 10
+})
+
+actions: {
+  checkout ({ commit, state }, products) {
+    // 把当前购物车的物品备份起来
+    const savedCartItems = [...state.cart.added]
+    // 发出结账请求，然后乐观地清空购物车
+    commit(types.CHECKOUT_REQUEST)
+    // 购物 API 接受一个成功回调和一个失败回调
+    shop.buyProducts(
+      products,
+      // 成功操作
+      () => commit(types.CHECKOUT_SUCCESS),
+      // 失败操作
+      () => commit(types.CHECKOUT_FAILURE, savedCartItems)
+    )
+  }
+}
+
+在组件中分发action
+
+在组件中使用 this.$store.dispatch('....')
+或者使用mapActions辅助函数将组件的methods映射为store.dispatch调用
+
+import { mapActions } from 'vuex';
+
+methods: {
+    ...mapActions([
+        'increament', // 将this.increament 映射为 this.$store.dispatch('increament'),
+        'increamentBy' // 将this.increamentBy(amount) 映射为 this.$store.dispatch('increamentBy', amount)
+    ]),
+    ...mapActions({
+        add: 'increament' // 将this.add() 映射为 this.$store,dispatch('increament')
+    })
+}
+
+组合action
+action通常是异步的，那么如何知道action什么时候结束呢，更重要的是我们如何才能组合多个action, 以处理更加复杂异步流程
+
+actions: {
+  actionA ({ commit }) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        commit('someMutation')
+        resolve()
+      }, 1000)
+    })
+  }
+}
+
+store.dispatch('actionA').then(() => {
+  // ...
+})
+
+
+actions: {
+  // ...
+  actionB ({ dispatch, commit }) {
+    return dispatch('actionA').then(() => {
+      commit('someOtherMutation')
+    })
+  }
+}
+
+actions: {
+  async actionA ({ commit }) {
+    commit('gotData', await getData())
+  },
+  async actionB ({ dispatch, commit }) {
+    await dispatch('actionA') // 等待 actionA 完成
+    commit('gotOtherData', await getOtherData())
+  }
+}
+
+
+module
+使用单一状态树，应用的所有状态都会集中到一个比较大的对象，当应用变得非常复杂的时候，store对象就有可能变得相当大
+为了解决这个问题，可以将store分割成模块，没个模块拥有自己的state、getter、mutation、action、甚至是嵌套的子模块
+
+
+const moduleA = {
+  state: { ... },
+  mutations: { ... },
+  actions: { ... },
+  getters: { ... }
+}
+
+const moduleB = {
+  state: { ... },
+  mutations: { ... },
+  actions: { ... }
+}
+
+const store = new Vuex.Store({
+    modules: {
+        a: moduleA,
+        b: moduleB
+    }
+})
+
+store.state.a  // moduleA的状态
+store.state.b // moduleB的状态
+
+模块的局部状态
+
+对于模块内部的 mutation 和 getter，接收的第一个参数是模块的局部状态对象。
+
+const moduleA = {
+  state: { count: 0 },
+  mutations: {
+    increment (state) {
+      // 这里的 `state` 对象是模块的局部状态
+      state.count++
+    }
+  },
+
+  getters: {
+    doubleCount (state) {
+      return state.count * 2
+    }
+  }
+}
+
+同样对于模块内部的action, 局部状态通过context.state暴露出来，根节点状态则为context.rootState
+const moduleA = {
+    actions: {
+        increament({state, commit, rootState}){
+            commit('increment');
+        }
+    }
+}
+
+对于模块内部的getter，根节点状态会作为第三个参数暴露出来
+const mdouleA = {
+    getters: {
+        sumWithRootCount (state, getters, rootState) {
+            return state.count + rootState.count
+        }
+    }
+}
+
+命名空间
+默认情况下，模块内部的action, mutation和getter是注册全局命名空间的  这样使得多个模块能够对同一个mutation或action作出响应
+
+如果希望你的mo klu
+
+
+
