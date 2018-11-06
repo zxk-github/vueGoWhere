@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../vue.js"></script>
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="box">
+            <child-name :msg1="msg" :msg2="msg2" @give="save"></child-name>
+            <p>{{bank}}</p>
+        </div>
+    </div>
+    <script>
+       // 创建一个全局vue组件
+       
+
+        // 局部组件
+        var template = '<h3 @click="handle" >{{child}}</h3>'
+
+       var childName = {
+           props: ['msg1', 'msg2'],
+            data() {
+                return {
+                    child: 'child',
+                    money: '我是子的钱',
+                    childMsg1: this.msg1,
+                    useMsg: ''
+                }
+            },
+            template: '<div><h3 @click="handle" >{{child}} {{childMsg1}} {{msg2}}</h3><p>{{useMsg}}</p></div>',
+            methods: {
+                handle() {
+                    this.msg.a = 333
+                    console.log(222);
+                    this.childMsg1 = '12312';
+                    this.useMsg = this.msg1 + 1111;
+                    this.$emit('give', this.money, 11);                    
+                }
+            }
+
+        }
+
+
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                msg: {
+                    a: 1
+                },
+                msg2: '我是妈的钱',
+                bank: ''
+            },
+            components: {
+                'childName': childName
+            },
+            methods: {
+                save(money, air) {
+                    console.log(money, air);
+                    this.bank = money;
+                }
+            }
+
+        })
+        
+
+        // function fn() {
+        //     return a 1 {} [] function error 
+        // }
+    </script>
+</body>
+</html>

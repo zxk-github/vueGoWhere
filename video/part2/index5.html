@@ -10,11 +10,11 @@
   <input type="text" v-model="inputValue"/>
   <button @click="btnClick">click</button>
   <ul>
-    <todo-item :content="item"
-               :index="index"
-               @delete="deleteItem"
-               v-for="(item,index) in list">
-    </todo-item>
+    <li 
+               
+               @click="deleteItem(index)"
+               v-for="(item,index) in list">{{item}}
+    </li>
   </ul>
 </div>
 

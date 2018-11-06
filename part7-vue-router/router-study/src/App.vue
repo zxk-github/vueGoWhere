@@ -2,8 +2,8 @@
   <div id="app">
     <div>
       <!-- <router-link :to="{name: 'user'}">link</router-link> -->
-      <router-link to="/foo">foo</router-link>
-      <router-link to="/boo">boo</router-link>
+      <!-- <router-link to="/foo">foo</router-link>
+      <router-link to="/boo">boo</router-link> -->
 
     </div>
     <router-view></router-view>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+     <div id="app">
+        <div>这是页面内容</div>
+        <div v-if="loginPop">
+            <div>这是你登录信息弹框</div>
+            <div>
+                手机号：
+                <input type="password" v-model="data.password"/>
+            </div>
+            <div>
+                邮箱：
+                <input type="text" v-model="data.email"/>
+            </div>
+            <button @click="login">登录</button>
+        </div>
+     </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                loginPop: false,
+                data: {
+                    tel: '',
+                    email: ''
+                }
+            },
+            mounted() {
+                // this.getLoginInfo();
+                if(this.getLoginInfo()) {
+                    console.log('存在登录信息， 你可以直接在这里写跳转到哪一个页面的路由')
+                } else {
+                    // 不存在登录信息，登录弹框显示
+                    this.loginPop = true;
+                }
+            },
+            methods: {
+                getLoginInfo() {
+                    var info = localStorage.getItem('leek-login');
+                    console.log(info);
+                    return info;
+                },
+                check () {
+                    var regTel = /^1\d{10}$/;
+                    var regEmail = /^[A-Za-z\d]+@[A-Za-z\d]+.[A-Za-z]+$/;
+                    if(!regTel.test(this.data.tel)) {
+                        alert('手机号格式错误');
+                        return false;
+                    } 
+                    if(!regEmail.test(this.data.email)) {
+                        alert('邮箱格式错误');
+                        return false;
+                    }
+                    if(this.data.password < 8 || this.data.password > 20) {
+                        alert('密码必须在8～20位');
+                        return false;
+                    }
+                    return true;
+                },
+
+                login() {
+                    if(!this.check()){
+                        return ;
+                    }
+                    console.log('通过了')
+                    localStorage.setItem('leek-login', JSON.stringify(this.data));
+                    console.log('登录信息填写完成， 你可以直接在这里写跳转到哪一个页面的路由')
+                }
+            }
+        })
+       
+    </script>
+</body>
+</html>

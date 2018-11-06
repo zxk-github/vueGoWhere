@@ -63,44 +63,29 @@
 <body>
     <div id="app">
         <div class="box">
-            <img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=1137105813,2293612706&fm=173&app=25&f=JPEG?w=218&h=146&s=9BBDD1A28062A6EC5C79E52D03008043" />
-            <div class="button-area" @click="showTextarea" v-if="!isShowTextarea">
-                <button class="show-input">write a commit</button>
-            </div>    
-            <div class="input" v-if="isShowTextarea">
-                <textarea v-model="textAreaContent"></textarea>
-                <div class="submit">
-                    <button class="submit-btn" @click="submit">submit</button>
-                </div>
-                
-            </div>
+            <textarea v-model="val"></textarea>
         </div>
-        <ul>
-            <li v-for="content of contentList">{{content.content}}</li>
-        </ul>
     </div>
     <script>
         
         var vm = new Vue({
             el: '#app',
             data: {
-                isShowTextarea: false,
-                contentList: [
-                    {content: '123213213'},
-                    {content: 'aaaa'},
-                    {content: 'cccc'}
-                ],
-                textAreaContent: ''
+                val: ''
+            },
+            watch: {
+                val(val, oldValue) {
+                    var arr = val.split(' ');
+                    console.log(arr);
+                    arr.push(' ');
+                    if(arr.length > 5) {
+                        arr.splice(5)
+                        this.val = arr.join(' ');
+                    }
+                }
             },
             methods: {
-                showTextarea() {
-                    this.isShowTextarea = true;
-                },
-                submit() {
-                    this.contentList.unshift({content: this.textAreaContent})
-                    this.textAreaContent = '';
-                    this.isShowTextarea = false;
-                }
+                
             }
         })
     </script>
