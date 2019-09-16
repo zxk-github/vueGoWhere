@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="box">
+        <!-- <child :msg="title" @update:change="fn2"></child> -->
+        <child :msg.sync="title"></child>
+    </div>
+    <script>
+        var child = {
+            props: ['msg'],
+            template: '<div @click="fn">{{this.msg}}</div>',
+            methods: {
+                fn() {
+                    this.$emit('update:msg', 12)
+                }
+            }
+        }
+
+        var vm = new Vue({
+            el: '#box',
+            data: {
+                title: 'asdeqww'
+            },
+            components: {
+                child
+            },
+            methods: {
+                fn2(a) {
+                    this.title = a;
+                }
+            }
+        })
+    </script>
+</body>
+</html>

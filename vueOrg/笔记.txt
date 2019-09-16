@@ -1,0 +1,172 @@
+vue官网文档的相关补充
+
+1. mixins
+多个组件公用同一个功能，这时候可以把这个功能先提取出来，然后在不同组件中通过mixins引入
+当组件使用了混用对象，那么组件本身将混入引入对象的选项
+
+const getPathComponent = {
+    methods: {
+        getPath() {
+            console.log(window.location.href);
+        }
+    }
+}
+export default {
+    data() {
+        return {
+            msg: 12
+        }
+    },
+    mixins: [getPathComponent],
+    created() {
+        this.getPath();
+    }
+}
+
+合并规则: 
+data项： 将进行浅合并，在和组件的数据冲突的时候，将以组件数据优先
+只会进行第一层数据对比，只要key值相同，data的数据就会直接覆盖混合对象中的数据
+
+钩子函数：钩子函数将会被混合成数据，所以都将会被调用，并且混合对象的声明周期要先于组件声明周期执行
+声明周期函数执行时机不变
+
+配置项值为对象的选项(methods, computed, watch, directives) 将会混合为同一个对象，两个对象键名冲突的时候，取组件配置项
+
+全局混入
+一旦注册了全局混入对象，将会影响到所有之后创建的vue实例
+
+Vue.mixin({
+  data() {
+    return {
+      'global': 'hello alibaba'
+    }
+  }
+})
+这就相当于一个全局的变量，在任何vue组件中都可以通过this.global使用
+其他的选项规则同上
+
+自定义选项合并策略
+
+2. 自定义指令
+指令的作用是扩展html标签的功能
+
+局部指令
+
+directives: {
+    myd1: {
+
+    },
+    myd2: {
+
+    }
+}
+
+全局指令
+Vue.directive('指令名称', {
+
+})
+
+使用 
+<div v-myd1></div>
+
+指令的钩子函数
+bind: 只会调用一次，指令第一次绑定到元素时调用，这里可以进行一次性初始化设置
+inserted: 被绑定元素插入到父节点时调用(只能保证父节点存在，但是不一定保证已经插入到文档中)
+update: 所在组件的VNode更新时调用，但是可能发生在子组件VNode更新之前，指令的值可能发生了变化，也可能没有
+componentUpdated: 指令所在的组件及其子组件VNode全部更新完成之后调用
+unbind: 只会调用一次，组件和指令解绑之后调用
+
+钩子函数的参数
+el: 指令绑定的DOM元素，可以用来直接操作DOM
+binding: {
+    name 指令名称
+    value 指令绑定的值v-myd1="2" 此时这个值就是2
+    oldValue 指令绑定的前一个值，仅仅在componentUpdated和update中可用，不论改变都可用
+    expression 字符串形式的指令表达式 v-myd1="1+1" 此时值就是1+1
+    arg 传给指令的参数 v-myd1="value" 此时arg就是字符串value
+    modifiers: 包含修饰符的对象 v-myd1.foo.bar  {foo: true, bar: true}
+}
+vnode 生成虚拟DOM的节点
+oldVnode 上一个虚拟节点，仅仅在componentUpdated和update中可用
+
+3. vue自定义插件
+
+//定义插件
+const myPlugin = {};
+myPlugin.install = function (Vue, options) {
+    console.log()
+    if(options.use) {
+        Vue.mixin({
+            created() {
+                console.log('这是自定义插件')
+            }
+        })
+    }
+}
+
+export default myPlugin;
+
+// 使用
+import myPlugin from './3.install.js';
+Vue.use(myPlugin, {use: true});
+
+通常vue插件是用来定义一下全局的功能
+添加全局方法，全局指令，过滤器，过度动画，通过mixin注册一些全局的组件配置项，在Vue.prototype上添加一些方法
+
+使用插件
+Vue.use(插件名称，配置项)
+
+定义插件
+myPlugin.install = function(Vue, options) {
+    // 添加全局方法
+    Vue.globalMethods = function() {
+
+    }
+
+    // 添加全局指令
+    Vue.directive('myDirecrive', {
+
+    })
+
+    // 混合组件
+    Vue.mixin({
+
+    })
+
+    // 在原型上添加方法
+    Vue.prototype.$myFn = function() {
+
+    }
+}
+
+4. 过滤器
+使用规则
+{{ msg | capitalize }}
+
+v-bind="msg | capitalize"
+
+局部过滤器
+filters: {
+    capitalize(value) {
+        // 这里是对值的处理
+        return value + '123'
+    }
+}
+
+全局过滤器
+
+Vue.filter('capitalize', (value) => {
+    return value + '123';
+})
+
+{{msg | filter(argA, argB)}}
+这种形式在定义过滤器的时候，需要增加两个形参，过滤器函数的第一个形参是需要转换的值
+
+5. Vue.extend()
+预设了部分选项的Vue实例构造器，返回了一个组件构造器
+
+
+
+
+
+

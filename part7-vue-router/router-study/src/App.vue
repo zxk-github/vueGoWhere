@@ -4,11 +4,12 @@
       <!-- <router-link :to="{name: 'user'}">link</router-link> -->
       <!-- <router-link to="/foo">foo</router-link>
       <router-link to="/boo">boo</router-link> -->
-
+      dasfsdaf
+      <router-link to="/user">aaa</router-link>
     </div>
     <router-view></router-view>
-    <router-view name="a"></router-view>
-    <router-view name="b"></router-view>
+    <!-- <router-view name="a"></router-view> -->
+    <!-- <router-view name="b"></router-view> -->
   </div>
 </template>
 
@@ -31,6 +32,7 @@ export default {
 </script>
 
 <style>
+@import url('./index.css');
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -1,0 +1,136 @@
+state 单一状态树，每个应用仅仅存在一个state，单一数据源，单一状态树可以让我们直接定义状态
+
+在组件中展示数据
+由于Vuex的状态存储是响应式的，从store中读取状态最简单的方法就是在计算属性中返回某个状态
+
+Vuex可以通过store选项，提供了一种机制从根组件注入到每一个子组件中，使得
+子组件可以通过this.$store.state访问到state
+可以通过this.$store.state.count访问到state的数据
+
+mapState 辅助函数
+当一个组件需要多个状态的时候，将这些状态都声明成计算属性会显得重复
+
+computed: {
+    ...mapState({
+      count: state => state.count,
+      countAlias: 'count',
+      computeCount(state){  
+        console.log(this)
+        return state.count + this.a  // 如果要是使用组件的变量，这里必须是一个正常的函数，箭头函数不行
+      }
+    })
+  }
+
+
+getter 像计算属性一样，他的返回值会根据他的依赖缓存起来，并且只有当他的返回值依赖的值发生变化的时候，才会执行
+
+getter会暴露为store.getters对象
+
+getter: {
+    todosTrue(state) {
+        return  state.todoList.filter(todo => todo.done);
+    },
+    todoCount(state, getters) {
+        return getters.todosTrue.length
+    }
+}
+
+可以接收两个参数 state， getters 
+
+获取
+doneTodoCount () {
+    return this.$store.getters.todoCount;
+}
+
+方法获取，传参数
+
+getters: {
+    getCount: (state) => (id) => {
+        return state.todos.find((todo) => {
+            return todo.id === id
+        })
+    }
+}
+
+
+使用
+this.$store.getters.getCount(1)
+
+修改store中数据的唯一方法是提交mutation
+mutation像是一个事件，每一个mutation都有一个字符串的事件类型(type)和一个回调函数(handler)
+这个回调函数就是我们实际进行状态更改的地方，并且他会接收state作为第一个参数
+
+mutations: {
+    increase(state, payload) {
+        state.count += payload.n
+    }
+}
+
+this.$store.commit('increase', {n: 1});
+this.$store.commit({type: 'increase', n: 1})
+
+mutation必须是同步的
+
+action函数接收一个与store相同的方法和属性,因此可以在action中通过
+commit提交一个mutation， context.state获取state, context.getters获取getters
+
+action: {
+    increaseAsync({commit}) {
+        setTimeout(() => {
+            commit('increase')
+        }, 1000)
+    }
+}
+
+store.dispatch('increaseAsync', 
+
+
+increaseAsyncPromise({ commit }) {
+    return Promise((resolve, reject) => {
+        setTimeout(() => {
+            commit('increase')
+            resolve()
+        }, 1000)
+    })
+}
+
+store.dispatch('increaseAsyncPromise').then(() => {
+
+})
+
+分模块
+
+const moduleA = {
+    state: {
+
+    },
+    getters: {
+
+    }
+}
+
+对于mutation和getter 函数接收的第一个state是模块的局部状态
+const storeA = {
+    state: {
+        countA: 1
+    },
+    getters: {
+        doubleCountA(state) {
+            return state.countA * 2;
+        }
+    },
+    mutations: {
+        increaseCount(state) {
+            state.countA++
+        }
+    },
+    actions: {
+        increaseAction({ commit , state, rootState}) {
+            
+        }
+    },
+}
+
+action中，commit,state 是当前模块的属性
+rootState获取的是根模块
+

@@ -1,7 +1,6 @@
 <template>
     <div>
-        <span @click="tip"></span>
-        <router-view></router-view>
+        sad 发射东风大厦发生大
     </div>
 </template>
 

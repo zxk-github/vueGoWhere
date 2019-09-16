@@ -1,0 +1,16 @@
+1. 参数处理
+参数{} , 
+    queryParams: {}
+
+    数据是在马上使用的时候处理的 从vuex state里面获取数据
+
+
+
+
+
+2. 发ajax请求 
+axios.get 
+axios.post
+
+
+3. 拿到数据之后处理

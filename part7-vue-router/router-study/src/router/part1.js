@@ -1,11 +1,19 @@
 import VueRouter from 'vue-router';
 
 import Id from '../components/id';
+import profile from '../components/profile'
 
 var routes = [
     {
-        path: '/user/:id',
-        component: Id
+        path: '/user',
+        component: Id,
+        children: [
+            {
+                path: 'profile/:id',
+                name: 'profile',
+                component: profile
+            }
+        ]
     }
 ]
 
